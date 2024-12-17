@@ -148,42 +148,23 @@ const UserWheel = () => {
         icon: 'success',
         title: '🎉 Congratulations! 🎉',
         html: `
-          <div style="
-            display: grid; 
-            grid-template-columns: repeat(4, 80px); 
-            gap: 20px; 
-            justify-content: center; 
-            perspective: 200px; 
-            margin-bottom: 50px;
-          ">
-            <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGp2ZmJmbml5NWJjZDR6aDY3ZnZsZXR6bzlteGR3YjdqYmEyNzY0cCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ExpUaMtQjl0RVlSwn8/giphy.gif" 
-              alt="Money" 
-              style="width: 150px; transform: rotateX(10deg) rotateY(10deg) translateY(-5px);" />
-            <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGp2ZmJmbml5NWJjZDR6aDY3ZnZsZXR6bzlteGR3YjdqYmEyNzY0cCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ExpUaMtQjl0RVlSwn8/giphy.gif" 
-              alt="Money" 
-              style="width: 150px; transform: rotateX(10deg) rotateY(10deg) translateY(-10px);" />
-            <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGp2ZmJmbml5NWJjZDR6aDY3ZnZsZXR6bzlteGR3YjdqYmEyNzY0cCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ExpUaMtQjl0RVlSwn8/giphy.gif" 
-              alt="Money" 
-              style="width: 150px; transform: rotateX(10deg) rotateY(10deg) translateY(-15px);" />
-            <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGp2ZmJmbml5NWJjZDR6aDY3ZnZsZXR6bzlteGR3YjdqYmEyNzY0cCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ExpUaMtQjl0RVlSwn8/giphy.gif" 
-              alt="Money" 
-              style="width: 150px; transform: rotateX(10deg) rotateY(10deg) translateY(-20px);" />
-              <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGp2ZmJmbml5NWJjZDR6aDY3ZnZsZXR6bzlteGR3YjdqYmEyNzY0cCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ExpUaMtQjl0RVlSwn8/giphy.gif" 
-              alt="Money" 
-              style="width: 150px; transform: rotateX(10deg) rotateY(10deg) translateY(-5px);" />
-            <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGp2ZmJmbml5NWJjZDR6aDY3ZnZsZXR6bzlteGR3YjdqYmEyNzY0cCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ExpUaMtQjl0RVlSwn8/giphy.gif" 
-              alt="Money" 
-              style="width: 150px; transform: rotateX(10deg) rotateY(10deg) translateY(-10px);" />
-            <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGp2ZmJmbml5NWJjZDR6aDY3ZnZsZXR6bzlteGR3YjdqYmEyNzY0cCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ExpUaMtQjl0RVlSwn8/giphy.gif" 
-              alt="Money" 
-              style="width: 150px; transform: rotateX(10deg) rotateY(10deg) translateY(-15px);" />
-            <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGp2ZmJmbml5NWJjZDR6aDY3ZnZsZXR6bzlteGR3YjdqYmEyNzY0cCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ExpUaMtQjl0RVlSwn8/giphy.gif" 
-              alt="Money" 
-              style="width: 150px; transform: rotateX(10deg) rotateY(10deg) translateY(-20px);" />
-          </div>
-          <strong>Winner is:</strong> <br>
-          <h2 style="color: #ff8c00; margin-top: 10px;">${data[prizeNumber].option}</h2>
-        `,
+        <div style="  
+          position: relative;
+          width: 150px;
+          height: 180px;
+          margin: 0 auto; /* Center the container */
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-bottom: 10px;
+        ">
+          <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGp2ZmJmbml5NWJjZDR6aDY3ZnZsZXR6bzlteGR3YjdqYmEyNzY0cCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ExpUaMtQjl0RVlSwn8/giphy.gif" 
+            alt="Money" 
+            style="position: absolute; width: 300px; transform: rotate(0deg) translateY(0px);" />
+        </div>
+        <strong>Winner is:</strong> <br>
+        <h2 style="color: #ff8c00; margin-top: 10px;">${data[prizeNumber].option}</h2>
+      `,
         timer: 5000,
         timerProgressBar: true,
         confirmButtonText: 'Exit',
