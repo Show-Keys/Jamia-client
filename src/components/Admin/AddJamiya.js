@@ -19,7 +19,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { saveJamiya } from "../../Features/jamiyaSlice";
 import { clearMessage } from "../../Features/jamiyaSlice";
 
-// finaly today we will start 
 const AddJamiya = () => {
   const today = new Date().toISOString().split("T")[0];
   const [code, setCode] = useState("");
