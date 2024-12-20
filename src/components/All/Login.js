@@ -1,23 +1,48 @@
-import React from 'react';
-// import { useForm } from 'react-hook-form';
-// import { yupResolver } from '@hookform/resolvers/yup';
-// import * as yup from 'yup';
-// import { useNavigate } from 'react-router-dom';
-// import { useDispatch, useSelector } from "react-redux";
-// import { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import {useNavigate} from 'react-router-dom';
+import {useDispatch,useSelector} from 'react-redux';
+import {useForm} from 'react-hook-form';
+import {yupResolver} from '@hookform/resolvers/yup';
+import {getUser} from "../Features/UserSlice";
+import { LoginValidation } from '../Validation/LoginValidation';
 
 function Login() {
-  /*
-  let [userName, setUsername] = useState("");
+  
+
+  let [uname, setUname] = useState("");
   let [password, setPassword] = useState("");
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const user = useSelector((state) => state.users.user);
-  const isSuccess = useSelector((state) => state.users.isSuccess);
-  const isError = useSelector((state) => state.users.isError);
-  */
+  // const msg=useSelector((state)=>state.counter.message);
+
+  const user = useSelector((state) => state.counter.user);
+  const isSuccess = useSelector((state) => state.counter.isSuccess);
+  const isError = useSelector((state) => state.counter.isError);
+
+
+  const {
+    register,
+    handleSubmit:submitForm,
+    formState:{errors},
+  }=useForm({resolver:yupResolver(LoginValidation)});
+
+  const handleSubmit=(data)=>{
+    const user={uname:uname,password:password};
+    dispatch(getUser(user));
+  }
+
+  useEffect(() => {
+    if (user && isSuccess) {
+        navigate("/Home");
+    }
+    if (isError) {
+        navigate("/Login"); // Redirect if error occurs
+        // dispatch(resetUserState()); // Reset user state on failure
+    }
+}, [isSuccess, isError, user,navigate]);
+
 
   return (
     <div>
@@ -30,9 +55,12 @@ function Login() {
           type="text"
           id="username"
           className="form-input"
-          // {...register('username')}
+          {...register('uname',{
+            value:uname,
+            onChange:(e)=>setUname(e.target.value)
+          })}
         />
-        {/* {errors.username && <p className="error-message">{errors.username?.message}</p>} */}
+        <p className="error-message">{errors.uname?.message}</p>
       </div>
 
       <br/>
@@ -44,13 +72,16 @@ function Login() {
           type="password"
           id="password"
           className="form-input"
-          // {...register('password')}
+          {...register('password',{
+            value:password,
+            onChange:(e)=>setPassword(e.target.value)
+          })}
         />
-        {/* {errors.password && <p className="error-message">{errors.password.message}</p>} */}
+        <p className='error'>{errors.password?.message}</p>
       </div>
       <br/><br/><br/>
 
-      <button type="submit" className="login-button">Login</button>
+      <button type="submit" className="login-button" onClick={submitForm(handleSubmit)}>Login</button>
     </div>
     <br/>
     <div>
