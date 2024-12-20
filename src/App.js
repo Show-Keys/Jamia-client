@@ -10,8 +10,8 @@ import AdminBoard from './components/Admin/AdminBoard.js';
 import UserWheel from './components/All/UserWheel.js';
 import ProtectedRoute from './Validation/ProtectedRoute.js';
 import AnimatedBackground from "./components/AnimatedBackground.js";
-import Registration from './components/Registration';
-import Login from './components/Login';
+import Registration from './components/All/Registration.js';
+import Login from './components/All/Login.js';
 
 const App = () => {
   return (

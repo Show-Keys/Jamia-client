@@ -3,8 +3,8 @@ import {useNavigate} from 'react-router-dom';
 import {useDispatch,useSelector} from 'react-redux';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
-import {getUser} from "../Features/UserSlice";
-import { LoginValidation } from '../Validation/LoginValidation';
+import {getUser} from "../../Features/UserSlice";
+import { LoginValidation } from '../../Validation/LoginValidation';
 
 function Login() {
   
