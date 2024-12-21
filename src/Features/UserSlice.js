@@ -4,10 +4,12 @@ import axios from 'axios';
 const initValue = {
   admin: null,
   user: null,
+  token: null,
   message: "",
   isLoading: false,
   isSuccess: false,
   isError: false,
+  isAuthenticated: false,
 };
 
 export const addUser = createAsyncThunk("user/addUser", async (userData, { rejectWithValue }) => {
@@ -17,8 +19,7 @@ export const addUser = createAsyncThunk("user/addUser", async (userData, { rejec
       uname: userData.uname,
       pnumber: userData.pnumber,
       password: userData.password,
-      conpassword: userData.confirmPassword,  // Make sure to match the field name
-      admincode: userData.admincode,
+      adminCode: userData.adminCode,
     });
     return response.data;
   } catch (error) {
@@ -64,6 +65,16 @@ const userSlice = createSlice({
       state.isLoading = false;
       state.isSuccess = false;
       state.isError = false;
+      state.isAuthenticated = false;
+    },
+    setUserToken: (state, action) => {
+      state.token = action.payload;
+      state.isAuthenticated = true;
+    },
+    logout: (state) => {
+      state.user = null;
+      state.token = null;
+      state.isAuthenticated = false;
     },
   },
   extraReducers: (builder) => {
@@ -94,6 +105,8 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.user = action.payload.user;
+        state.token = action.payload.token;
+        state.isAuthenticated = true;
         state.message = action.payload.message;
       })
       .addCase(userLogin.rejected, (state, action) => {
@@ -121,5 +134,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { resetState } = userSlice.actions;
+export const { resetState, setUserToken, logout } = userSlice.actions;
 export default userSlice.reducer;

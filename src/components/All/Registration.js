@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from 'react-router-dom';
-import { addUser, resetState } from "../../Features/UserSlice";
+import axios from 'axios';
+import Swal from 'sweetalert2';
 import { userSchemaValidation } from "../../Validation/UserValidation";
 import "../../App.css";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -22,13 +22,9 @@ const Registration = () => {
   const [pnumber, setPnumber] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [admincode, setAdminCode] = useState("");
+  const [adminCode, setAdminCode] = useState("");
+  const [success, setSuccess] = useState(false);
 
-  const isSuccess = useSelector((state) => state.user.isSuccess);
-  const isError = useSelector((state) => state.user.isError);
-  const message = useSelector((state) => state.user.message);
-
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const {
@@ -40,28 +36,38 @@ const Registration = () => {
   });
 
   useEffect(() => {
-    if (isSuccess) {
+    if (success) {
       navigate('/login'); // Redirect to login or any other page after successful registration
-      dispatch(resetState());
     }
-  }, [isSuccess, navigate, dispatch]);
+  }, [success, navigate]);
 
-  useEffect(() => {
-    if (isError) {
-      alert(message); // Show error message
-      dispatch(resetState());
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post("http://localhost:5000/api/users/insertUser", data);
+      if (response.status === 200) {
+        setSuccess(true);
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Registration Failed',
+          text: response.data || "Registration failed. Please try again.",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'An Error Occurred',
+        text: "An error occurred. Please try again.",
+      });
+      console.error("Registration error:", error);
     }
-  }, [isError, message, dispatch]);
-
-  const onSubmit = (data) => {
-    dispatch(addUser(data));
   };
 
   return (
     <Container
       maxWidth="lg"
       sx={{
-        height: "100vh",
+        height: "50vh",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -133,6 +139,7 @@ const Registration = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 error={!!errors.password}
                 helperText={errors.password ? errors.password.message : ''}
+                autoComplete="new-password"
               />
             </Grid>
             <Grid item xs={12}>
@@ -147,19 +154,20 @@ const Registration = () => {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 error={!!errors.confirmPassword}
                 helperText={errors.confirmPassword ? errors.confirmPassword.message : ''}
+                autoComplete="new-password"
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 fullWidth
                 label="Admin Access Code"
-                name="admincode"
+                name="adminCode"
                 variant="outlined"
-                {...register('admincode')}
-                value={admincode}
+                {...register('adminCode')}
+                value={adminCode}
                 onChange={(e) => setAdminCode(e.target.value)}
-                error={!!errors.admincode}
-                helperText={errors.admincode ? errors.admincode.message : ''}
+                error={!!errors.adminCode}
+                helperText={errors.adminCode ? errors.adminCode.message : ''}
               />
             </Grid>
             <Grid item xs={12}>

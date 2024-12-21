@@ -9,6 +9,9 @@ import {
   Typography,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setUserToken } from "../../Features/UserSlice"; // Assuming you have an action to set the user token
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -16,16 +19,31 @@ const Login = () => {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!username || !password) {
       setError("Both fields are required!");
       return;
     }
     setError(""); // Clear any existing errors
-    console.log("Logging in with:", { username, password });
-    // Add API login logic here
-    navigate("/dashboard"); // Navigate to dashboard on successful login
+
+    try {
+      const response = await axios.post("http://localhost:5000/api/users/userLogin", {
+        uname: username,
+        password,
+      });
+
+      if (response.data.message === 'success') {
+        dispatch(setUserToken(response.data.token)); // Store the token in Redux state
+        navigate("/search"); // Navigate to SearchJamiya on successful login
+      } else {
+        setError(response.data.message || "You need to register first.");
+      }
+    } catch (error) {
+      setError("An error occurred. Please try again.");
+      console.error("Login error:", error);
+    }
   };
 
   return (
@@ -93,6 +111,17 @@ const Login = () => {
             mt: 2,
           }}
         >
+          <IconButton color="primary" onClick={() => navigate(-1)}>
+            <ArrowBackIcon />
+          </IconButton>
+          <Typography
+            variant="button"
+            display="block"
+            gutterBottom
+            sx={{ ml: 1, color: "#fff" }}
+          >
+            Back
+          </Typography>
         </Box>
         <Typography
           variant="body2"
