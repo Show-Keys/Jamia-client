@@ -42,8 +42,15 @@ const initialState = {
 
 const wheelSlice = createSlice({
   name: 'wheel',
-  initialState,
-  reducers: {},
+  initialState: {
+    items: [],
+    live: false,
+  },
+  reducers: {
+    setLive: (state, action) => {
+      state.live = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       // Fetch Wheel Items
@@ -54,6 +61,7 @@ const wheelSlice = createSlice({
       .addCase(fetchWheelItems.fulfilled, (state, action) => {
         state.isLoading = false;
         state.data = action.payload;
+        state.items = action.payload;
       })
       .addCase(fetchWheelItems.rejected, (state, action) => {
         state.isLoading = false;
@@ -63,6 +71,7 @@ const wheelSlice = createSlice({
       // Add Wheel Item
       .addCase(addWheelItem.fulfilled, (state, action) => {
         state.data.push(action.payload);
+        state.items.push(action.payload);
       })
 
       // Delete Wheel Item
@@ -72,4 +81,5 @@ const wheelSlice = createSlice({
   },
 });
 
+export const { setLive } = wheelSlice.actions;
 export default wheelSlice.reducer;

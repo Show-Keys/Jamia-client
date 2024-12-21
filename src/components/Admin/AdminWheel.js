@@ -5,7 +5,7 @@ import confetti from 'canvas-confetti';
 import Swal from 'sweetalert2';
 import jamiaLogo from '../Images/jamia50.png';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchWheelItems, addWheelItem, deleteWheelItem } from '../../Features/WheelSlice';
+import { fetchWheelItems, addWheelItem, deleteWheelItem, setLive } from '../../Features/WheelSlice';
 import { addResult } from '../../Features/ResultSlice'; // Assuming you have a ResultSlice for managing results
 
 const Container = styled.div`
@@ -89,7 +89,7 @@ const ListItem = styled.li`
 
 const AdminWheel = () => {
   const dispatch = useDispatch();
-  const data = useSelector((state) => state.wheel.data);
+  const data = useSelector((state) => state.wheel.items);
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
   const [newItem, setNewItem] = useState('');
@@ -212,6 +212,17 @@ const AdminWheel = () => {
     }
   };
 
+  const handleStartLiveWheel = () => {
+    dispatch(setLive(true));
+    Swal.fire({
+      icon: 'success',
+      title: 'Live Wheel Started',
+      text: 'The live wheel has been started successfully.',
+      confirmButtonText: 'OK',
+      confirmButtonColor: '#ff8c00',
+    });
+  };
+
   const launchCustomConfetti = () => {
     const duration = 3000;
     const end = Date.now() + duration;
@@ -246,6 +257,7 @@ const AdminWheel = () => {
         onChange={(e) => setNewItem(e.target.value)}
       />
       <Button onClick={handleAddItem}>Add Item</Button>
+      <Button onClick={handleStartLiveWheel}>Start Live Wheel</Button>
 
       <WheelContainer>
         <CenterLogo src={jamiaLogo} alt="Center Logo" />
