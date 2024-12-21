@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const getAdmin = createAsyncThunk("administration/getAdmin", async (adminData) => {
     try {
-      const response = await axios.post("http://localhost:8080/adminLogin", {
+      const response = await axios.post("http://localhost:5000/api/adminLogin", {
             email:adminData.email,
             password:adminData.password,
         });

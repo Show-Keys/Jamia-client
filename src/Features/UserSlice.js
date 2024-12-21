@@ -12,7 +12,7 @@ const initValue = {
 
 export const addUser = createAsyncThunk("counter/addUser", async (userData) => {
     try {
-        const response = await axios.post("http://localhost:8080/insertUser", {
+        const response = await axios.post("http://localhost:5000/api/users/insertUser", {
             fullName: userData.fullName,
             uname: userData.uname,
             pnumber: userData.pnumber,
@@ -30,7 +30,7 @@ export const addUser = createAsyncThunk("counter/addUser", async (userData) => {
 
 export const getUser = createAsyncThunk("counter/getUser", async (userData) => {
     try {
-        const response = await axios.post("http://localhost:8080/userLogin", {
+        const response = await axios.post("http://localhost:5000/api/users/userLogin", {
             password: userData.password,
             uname: userData.uname,
         });
@@ -44,7 +44,7 @@ export const getUser = createAsyncThunk("counter/getUser", async (userData) => {
 
 export const getAdmin=createAsyncThunk("counter/getAdmin",async(userData)=>{
     try{
-            const response=await axios.post("http://localhost:8080/adminLogin",{
+            const response=await axios.post("http://localhost:5000/api/users/adminLogin",{
                 password:userData.password,
                 aname:userData.aname,
             });
