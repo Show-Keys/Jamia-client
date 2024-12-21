@@ -1,7 +1,9 @@
 import React from 'react';
 import styled ,{keyframes} from 'styled-components';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import 'animate.css';
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from './Features/UserSlice'; // Assuming you have a logout action
 
 const HeaderContainer = styled.header`
   background: linear-gradient(135deg,rgb(238, 69, 69),rgb(198, 134, 45),rgb(117, 103, 84));
@@ -54,6 +56,11 @@ const Nav = styled.nav`
     }
   }
 `;
+const UserSection = styled.div`
+  display: flex;
+  align-items: left;
+  gap: 30px;
+`;
 const pulse = keyframes`
   0% {
     transform: scale(1);
@@ -80,21 +87,41 @@ const LiveBadge = styled.div`
   text-transform: uppercase;
   animation: ${pulse} 3s infinite;
 `;
+
 export { HeaderContainer, Nav };
 
 
-const Header = () => (
-  <HeaderContainer>
-    <h1>Jamia</h1>
-    <Nav>
-      <Link to="/">Home</Link>|
-      <Link to="/login">Join To Jamia</Link>|
-      <Link to="/AdminBoard">Admin Board</Link>|
-      <Link to="/results">Results</Link>|
-      <Link to="/aboutus">About Us</Link>|
-      <Link to="/UserWheel"><LiveBadge>🔴 Live Wheel</LiveBadge></Link>
-    </Nav>
-  </HeaderContainer>
-);
+const Header = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user?.user);
+  const isAuthenticated = useSelector((state) => state.user?.isAuthenticated);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate('/');
+  };
+
+  return (
+    <HeaderContainer>
+      <h1>Jamia</h1>
+      {isAuthenticated && (
+        <UserSection>
+          {user?.uname}
+          <button onClick={handleLogout}>Sign Out</button>
+        </UserSection>
+      )}
+      <Nav>
+        <Link to="/">Home</Link>|
+        <Link to="/login">Join To Jamia</Link>|
+        <Link to="/AdminBoard">Admin Board</Link>|
+        <Link to="/results">Results</Link>|
+        <Link to="/aboutus">About Us</Link>|
+        <Link to="/UserWheel"><LiveBadge>🔴 Live Wheel </LiveBadge></Link>
+      </Nav>
+
+    </HeaderContainer>
+  );
+};
 
 export default Header;

@@ -4,12 +4,12 @@ today.setHours(0, 0, 0, 0); // Remove time portion for accurate comparison
   
 const AddJamiyaValidation = Yup.object().shape({
   code: Yup.string().required("Code is required"),
-  noOfMembers: Yup.number()
-    .min(1, "At least 1 member is required") .nullable() // Allow null values
-    .transform((value, originalValue) =>
-      originalValue === '' ? null : value
-    )
-    .required("Number of Members is required"),
+  // noOfMembers: Yup.number()
+  //   .min(1, "At least 1 member is required") .nullable() // Allow null values
+  //   .transform((value, originalValue) =>
+  //     originalValue === '' ? null : value
+  //   )
+  //   .required("Number of Members is required"),
   noOfMonths: Yup.number()
     .min(1, "Number of months must be at least 1").nullable() // Allow null values
     .transform((value, originalValue) =>
