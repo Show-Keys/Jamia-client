@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Wheel } from 'react-custom-roulette';
 import styled from 'styled-components';
 import confetti from 'canvas-confetti';
@@ -94,10 +94,7 @@ const AdminWheel = () => {
   const [prizeNumber, setPrizeNumber] = useState(0);
   const [newItem, setNewItem] = useState('');
 
-  useEffect(() => {
-    dispatch(fetchWheelItems());
-  }, [dispatch]);
-
+  // Handle spin
   const handleSpinClick = () => {
     if (data.length === 0) {
       Swal.fire({
@@ -149,6 +146,7 @@ const AdminWheel = () => {
     });
   };
 
+  // Handle add item
   const handleAddItem = () => {
     const trimmedItem = newItem.trim();
 
@@ -190,19 +188,13 @@ const AdminWheel = () => {
     document.getElementById('item-input').focus();
   };
 
-  const handleDeleteItem = (id) => {
-    dispatch(deleteWheelItem(id)).then(() => {
-      Swal.fire({
-        icon: 'success',
-        title: 'Item Deleted',
-        text: 'The item has been successfully deleted from the wheel.',
-        confirmButtonText: 'OK',
-        confirmButtonColor: '#ff8c00',
-      });
-      dispatch(fetchWheelItems()); // Fetch the updated list of items
-    });
-
-    if (data.length === 1) {
+  // Handle delete item
+  const handleDeleteItem = (index) => {
+    const updatedData = data.filter((_, i) => i !== index);
+    dispatch(deleteItem(index));
+  
+    // Check if the wheel is now empty after deletion
+    if (updatedData.length === 0) {
       Swal.fire({
         icon: 'info',
         title: 'Wheel is Empty',
@@ -213,17 +205,7 @@ const AdminWheel = () => {
     }
   };
 
-  const handleStartLiveWheel = () => {
-    dispatch(setLive(true));
-    Swal.fire({
-      icon: 'success',
-      title: 'Live Wheel Started',
-      text: 'The live wheel has been started successfully.',
-      confirmButtonText: 'OK',
-      confirmButtonColor: '#ff8c00',
-    });
-  };
-
+  // Launch custom confetti
   const launchCustomConfetti = () => {
     const duration = 3000;
     const end = Date.now() + duration;
@@ -264,23 +246,21 @@ const AdminWheel = () => {
         <CenterLogo src={jamiaLogo} alt="Center Logo" />
         {data.length > 0 ? (
           <Wheel
-            mustStartSpinning={mustSpin}
-            prizeNumber={prizeNumber}
-            data={data}
-            onStopSpinning={handleStopSpinning}
-            backgroundColors={['#FF0000', '#FFD700', '#32CD32', '#FF69B4', '#FF8C00', '#87CEEB']}
-            textColors={['#FFFFFF']}
-            outerBorderColor="#FFD700"
-            outerBorderWidth={8}
-            radiusLineColor="#FFFFFF"
-            radiusLineWidth={2}
-            fontSize={18}
-          />
-        ) : (
-          <p style={{ color: '#ff8c00', fontSize: '1.2rem', marginTop: '20px' }}>
-            The wheel is empty. Please add items to spin.
-          </p>
-        )}
+          mustStartSpinning={mustSpin}
+          prizeNumber={prizeNumber}
+          data={data}
+          onStopSpinning={handleStopSpinning}
+          backgroundColors={['#FF0000', '#FFD700', '#32CD32', '#FF69B4', '#FF8C00', '#87CEEB']}
+          textColors={['#FFFFFF']}
+          outerBorderColor="#FFD700"
+          outerBorderWidth={8}
+          radiusLineColor="#FFFFFF"
+          radiusLineWidth={2}
+          fontSize={18}
+        />
+        ):(<p style={{ color: '#ff8c00', fontSize: '1.2rem', marginTop: '20px' }}>
+          The wheel is empty. Please add items to spin.
+        </p>)}
       </WheelContainer>
 
       <Button onClick={handleSpinClick} disabled={data.length === 0}>

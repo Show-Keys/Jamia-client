@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
 import logo from "../Images/logo.png";
+import { useDispatch } from "react-redux";
+import {logout}  from "../../Features/UserSlice";
 
 const HomeContainer = styled.div`
   display: flex;
@@ -66,6 +68,15 @@ const JoinButton = styled(motion.button)`
 `;
 
 const Home = () => {
+
+
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(logout()); // Dispatch logout action to clear user session
+  };
+
+
   const handleJoinClick = () => {
     Swal.fire({
       title: "Ready to Join?",
@@ -115,6 +126,8 @@ const Home = () => {
         >
           Join Jamia Now!
         </JoinButton>
+
+        <button onClick={handleLogout}>Logout</button>
       </HomeContainer>
     </>
   );

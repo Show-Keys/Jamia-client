@@ -13,11 +13,12 @@ import {
 } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { getJamiyas } from "../../Features/jamiyaSlice";
+import { useNavigate } from "react-router-dom";
 
 const JamiaDashBorad = () => {
   const [isModalOpen, setModalOpen] = useState(false); // Modal visibility state
   const [selectedDescription, setSelectedDescription] = useState(null); // Modal content
-
+  const navigate = useNavigate();
   const Jamiya = useSelector((state) => state.jamiyas.Jamiyas || []); // Fetched data
   const msg = useSelector((state) => state.jamiyas.message); // Error or response message
   console.log(Jamiya);
@@ -31,6 +32,13 @@ const JamiaDashBorad = () => {
 
   // Modal Toggle
   const toggleModal = () => setModalOpen(!isModalOpen);
+
+
+  const handleOpen = (jcode) => {
+
+    navigate(`/viewusers/${jcode}`);
+
+  }
 
   return (
     <Container className="view-page">
@@ -75,8 +83,8 @@ const JamiaDashBorad = () => {
                       </span>
                     </td>
                     <td>
-                      <Button color="success" className="me-2">
-                        Join
+                      <Button color="success" className="me-2" onClick={() => handleOpen(item.jcode)}>
+                        Open
                       </Button>
                     </td>
                   </tr>
