@@ -1,116 +1,125 @@
-import { createSlice,createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 const initValue = {
-    admin: null,
-    user: null,
-    message: "",
-    isLoading: false,
-    isSuccess: false,
-    isError: false,
+  admin: null,
+  user: null,
+  message: "",
+  isLoading: false,
+  isSuccess: false,
+  isError: false,
 };
 
-export const addUser = createAsyncThunk("counter/addUser", async (userData) => {
-    try {
-        const response = await axios.post("http://localhost:5000/api/users/insertUser", {
-            fullName: userData.fullName,
-            uname: userData.uname,
-            pnumber: userData.pnumber,
-            password: userData.password,
-            conpassword: userData.confirmPassword,  // Make sure to match the field name
-            admincode: userData.admincode,
-        });
-        const msg = response.data;
-        return msg;
-    } catch (error) {
-        console.error("Error adding user", error);
-        throw error;  // Re-throw the error to handle in the component
-    }
+export const addUser = createAsyncThunk("user/addUser", async (userData, { rejectWithValue }) => {
+  try {
+    const response = await axios.post("http://localhost:5000/api/users/insertUser", {
+      fullName: userData.fullName,
+      uname: userData.uname,
+      pnumber: userData.pnumber,
+      password: userData.password,
+      conpassword: userData.confirmPassword,  // Make sure to match the field name
+      admincode: userData.admincode,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error adding user", error);
+    return rejectWithValue(error.response.data);
+  }
 });
 
-export const getUser = createAsyncThunk("counter/getUser", async (userData) => {
-    try {
-        const response = await axios.post("http://localhost:5000/api/users/userLogin", {
-            password: userData.password,
-            uname: userData.uname,
-        });
-        return response.data.user;
-    } catch (error) {
-        console.error("Invalid Credentials", error);
-        return null; // Ensure null value is returned to reset state
-    }
+export const userLogin = createAsyncThunk("user/userLogin", async (userData, { rejectWithValue }) => {
+  try {
+    const response = await axios.post("http://localhost:5000/api/users/userLogin", {
+      uname: userData.uname,
+      password: userData.password,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error logging in user", error);
+    return rejectWithValue(error.response.data);
+  }
 });
 
-
-export const getAdmin=createAsyncThunk("counter/getAdmin",async(userData)=>{
-    try{
-            const response=await axios.post("http://localhost:5000/api/users/adminLogin",{
-                password:userData.password,
-                aname:userData.aname,
-            });
-            //console.log(response.data.user);
-            return response.data.admin;
-            
-    }
-    catch(error)
-    {
-        alert("Invalid Credentials "+error);
-        initValue.admin={};
-    }
+export const adminLogin = createAsyncThunk("user/adminLogin", async (adminData, { rejectWithValue }) => {
+  try {
+    const response = await axios.post("http://localhost:5000/api/users/adminLogin", {
+      uname: adminData.uname,
+      password: adminData.password,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error logging in admin", error);
+    return rejectWithValue(error.response.data);
+  }
 });
 
-export const resetUserState = createSlice({
-    name: "counter",
-    initialState: initValue,
-    reducers: {},
-    extraReducers: (builder) => {
-        builder.addCase(getUser.rejected, (state) => {
-            state.user = null; // Reset user on failure
-        });
+const userSlice = createSlice({
+  name: 'user',
+  initialState: initValue,
+  reducers: {
+    resetState: (state) => {
+      state.admin = null;
+      state.user = null;
+      state.message = "";
+      state.isLoading = false;
+      state.isSuccess = false;
+      state.isError = false;
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(addUser.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
+        state.message = "";
+      })
+      .addCase(addUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.message = action.payload;
+      })
+      .addCase(addUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload || "Failed to add user";
+      })
+      .addCase(userLogin.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
+        state.message = "";
+      })
+      .addCase(userLogin.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.user = action.payload.user;
+        state.message = action.payload.message;
+      })
+      .addCase(userLogin.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload || "Failed to log in user";
+      })
+      .addCase(adminLogin.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.isSuccess = false;
+        state.message = "";
+      })
+      .addCase(adminLogin.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.admin = action.payload.admin;
+        state.message = action.payload.message;
+      })
+      .addCase(adminLogin.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message = action.payload || "Failed to log in admin";
+      });
+  },
 });
 
-export const UserSlice=createSlice({
-    name:"counter",
-    initialState:initValue,
-    extraReducers:(builder)=>{
-        builder.addCase(addUser.pending,(state,action)=>{
-                state.isLoading=true;
-                state.actPending=action.payload;
-            })
-            .addCase(addUser.fulfilled,(state,action)=>{
-                state.isLoading=false;
-                state.isSuccess=true;
-            })
-            .addCase(addUser.rejected,(state)=>{
-                state.isLoading=false;
-                state.isError=true;
-            })
-            .addCase(getUser.pending, (state) => {
-                state.isLoading = true;
-            })
-            .addCase(getUser.fulfilled, (state, action) => {
-                state.isLoading = false;
-                state.isSuccess = true;
-                state.user = action.payload;
-            })
-            .addCase(getUser.rejected, (state) => {
-                state.isLoading = false;
-                state.isError = true;
-                state.user = null; // Reset user on failure
-            })
-            .addCase(getAdmin.pending,(state)=>{
-                state.isLoading=true;
-            })
-            .addCase(getAdmin.fulfilled,(state,action)=>{
-                state.isLoading=false;
-                state.isSuccess=true;
-                state.user=action.payload;
-            })
-            .addCase(getAdmin.rejected,(state)=>{
-                state.isLoading=false;
-                state.isError=true;
-            })
-    }
-});
-export default UserSlice.reducer;
+export const { resetState } = userSlice.actions;
+export default userSlice.reducer;

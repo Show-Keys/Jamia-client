@@ -1,15 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
-import JamiyaSlice from './Features/jamiyaSlice';
-import wheelReducer from './Features/WheelSlice';
 import userReducer from './Features/UserSlice';
+import wheelReducer from './Features/WheelSlice';
+import jamiyaReducer from './Features/jamiyaSlice';
 import adminReducer from './Features/AdminSlice';
 import resultReducer from './Features/ResultSlice';
 
 const store = configureStore({
   reducer: {
-    jamiyas: JamiyaSlice,
+    user: userReducer,
     wheel: wheelReducer,
-    counter: userReducer,
+    jamiyas: jamiyaReducer,
     administration: adminReducer,
     results: resultReducer,
   },

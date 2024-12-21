@@ -6,6 +6,7 @@
 		"@eslint/object-schema": "^2.1.5",
 		"@hookform/resolvers": "^3.9.1",
 		"@jridgewell/sourcemap-codec": "^1.5.0",
+		"@mui/icons-material": "^6.2.1",
 		"@reduxjs/toolkit": "^2.2.8",
 		"@testing-library/jest-dom": "^5.17.0",
 		"@tsparticles/react": "^3.0.0",
