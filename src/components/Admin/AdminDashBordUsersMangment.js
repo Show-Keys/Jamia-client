@@ -11,12 +11,13 @@ const { jcode } = useParams(); // Get jcode from the URL
 
   // Accessing the state from Redux store
   const  participants  = useSelector((state) => state.jamiyas.Participants);
+  const  msg  = useSelector((state) => state.jamiyas.message);
 
   // Fetch participants when component mounts
   useEffect(() => {
     if (jcode) {
       dispatch(fetchParticipants(jcode));
-      console.log(participants);
+      console.log(msg);
     }
   }, [dispatch, jcode]);
 

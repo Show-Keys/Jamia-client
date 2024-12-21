@@ -16,6 +16,7 @@ import { useSelector } from 'react-redux';
 import AdminUsers from "./components/Admin/AdminUsers.js";
 import WheelComponent from "./components/Admin/WheelComponent.js";
 import AdminDashBordUsersMangment from "./components/Admin/AdminDashBordUsersMangment.js";
+import AboutUs from "./components/All/AboutUS.js";
 
 
 const App = () => {
@@ -29,11 +30,13 @@ const App = () => {
       <Header />
 
       <Routes>
-      <Route path="/wheel" element={<WheelComponent />} />
+      <Route path="/wheel" element={<AdminWheel />} />
       <Route path="/Register" element={<Registeration />} />
       <Route path="/addjamiya" element={<AddJamiya />} />
       <Route path="/JamiaDashBorad" element={<JamiaDashBorad />} />
       <Route path="/Login" element={<Login />} />
+      <Route path="/result" element={<UserWheel />} />
+      <Route path="/AboutUs" element={<AboutUs />} />
       <Route path="/viewusers/:jcode" element={<AdminDashBordUsersMangment />} />
       <Route path="/" element={<Home />} />
         {user && isAdmin ? (
@@ -79,10 +82,6 @@ const App = () => {
             )
 
         )}
-
-
-
-        <Route path="/UserWheel" element={<UserWheel />} />
       </Routes>
       <AnimatedBackground />
     </BrowserRouter>

@@ -86,14 +86,23 @@ export { HeaderContainer, Nav };
 const Header = () => (
   <HeaderContainer>
     <h1>Jamia</h1>
+
+
     <Nav>
-      <Link to="/">Home</Link>|
-      <Link to="/search">Join To Jamia</Link>|
-      <Link to="/AdminBoard">Admin Board</Link>|
-      <Link to="/UserWheel"><LiveBadge>🔴 Live Wheel</LiveBadge></Link>
-      
-    </Nav>
+        <Link to="/">Home</Link>|
+        <Link to="/login">Join To Jamia</Link>|
+        <Link to="/wheel">Admin Board</Link>|
+        <Link to="/results">Results</Link>|
+        <Link to="/aboutus">About Us</Link>|
+        <Link to="/addjamiya">Add Jamiya</Link>|
+        <Link to="/JamiaDashBorad">Admin DashBoard</Link>|
+        <Link to="/UserWheelss"><LiveBadge>🔴 Live Wheel </LiveBadge></Link>
+        
+      </Nav>
+
+    
   </HeaderContainer>
 );
 
 export default Header;
+

@@ -147,6 +147,7 @@ import {useDispatch,useSelector} from "react-redux";
 import {useNavigate} from 'react-router-dom';
 import  {registerUser}  from "../../Features/UserSlice";
 import {userSchemaValidation} from "../../Validation/UserValidation";
+import '../../App.css'; // Make sure to create a CSS file for styling
 
 
 const Registeration =()=>{

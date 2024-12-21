@@ -14,6 +14,8 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { getJamiyas } from "../../Features/jamiyaSlice";
 import { useNavigate } from "react-router-dom";
+import { deleteJamiya } from "../../Features/jamiyaSlice";
+import clearParticipants from "../../Features/jamiyaSlice";
 
 const JamiaDashBorad = () => {
   const [isModalOpen, setModalOpen] = useState(false); // Modal visibility state
@@ -27,7 +29,7 @@ const JamiaDashBorad = () => {
 
   // Fetch all Jamiya on page load
   useEffect(() => {
-    dispatch(getJamiyas()); // Assuming `getJamiya()` fetches all data when no parameter is passed
+    dispatch(getJamiyas());
   }, [dispatch]);
 
   // Modal Toggle
@@ -37,6 +39,12 @@ const JamiaDashBorad = () => {
   const handleOpen = (jcode) => {
 
     navigate(`/viewusers/${jcode}`);
+
+  }
+  
+  const handleDelete = (jcode) => {
+
+    dispatch(deleteJamiya(jcode));
 
   }
 
@@ -62,7 +70,8 @@ const JamiaDashBorad = () => {
                   <th>Start Date</th>
                   <th>End Date</th>
                   <th>Info</th>
-                  <th>Actions</th>
+                  <th>Vist</th>
+                  <th>Remove</th>
                 </tr>
               </thead>
               <tbody>
@@ -85,6 +94,11 @@ const JamiaDashBorad = () => {
                     <td>
                       <Button color="success" className="me-2" onClick={() => handleOpen(item.jcode)}>
                         Open
+                      </Button>
+                    </td>
+                    <td>
+                      <Button color="danger" className="me-2" onClick={() => handleDelete(item.jcode)}>
+                        Delete
                       </Button>
                     </td>
                   </tr>

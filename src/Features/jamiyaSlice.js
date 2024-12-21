@@ -133,6 +133,39 @@ export const rejectParticipant = createAsyncThunk("jamiyas/rejectParticipant", a
 });
 
 
+// export const deleteJamiya = createAsyncThunk(
+//     "jamiyas/deleteJamiya",
+//     async (jcode, { rejectWithValue }) => {
+//       try {
+//         // Fetch participants to check if there are any
+//         const response = await axios.post("http://127.0.0.1:5000/getParticipants", { jcode });
+  
+//         // If there are participants, reject the action with a message
+//         if (response.data.participants.length > 0) {
+//           return rejectWithValue("Cannot delete, participants are still present.");
+//         }
+  
+//         // If no participants, proceed with deletion
+//         await axios.delete(`http://127.0.0.1:5000/deleteJamiya/${jcode}`);
+//         return { message: "Jamiya deleted successfully" };
+//       } catch (error) {
+//         console.log(error);
+//         return rejectWithValue("Failed to delete Jamiya");
+//       }
+//     }
+//   );
+  
+  export const deleteJamiya=createAsyncThunk("jamiyas/deleteJamiya",async(jcode)=>{
+    try{
+            const response=await axios.delete(`http://127.0.0.1:5000/deleteJamiya/${jcode}`);
+            return response.data.message;      
+    }
+    catch(error)
+    {
+        console.log(error);
+    }
+});
+
 
 const initValue = {
     Jamiyas:[],
@@ -150,7 +183,11 @@ const initValue = {
 export const JamiyaSlice=createSlice({
     name:"jamiyas",
     initialState:initValue,
-
+    reducers: {
+        clearParticipants(state) {
+          state.Participants = [];
+        },
+      },
     extraReducers:(builder)=>{
         builder.addCase(saveJamiya.pending,(state)=>{
                 state.isLoading=true;
@@ -247,7 +284,26 @@ export const JamiyaSlice=createSlice({
               .addCase(fetchParticipants.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = action.error.message;
+              }).addCase(deleteJamiya.pending, (state) => {
+                state.isLoading = true;
+              })
+              .addCase(deleteJamiya.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                state.message = action.payload;
+            
+                // Only remove the deleted Jamiya if the response message is "Jamiya Deleted"
+                if (action.payload === "Jamiya Deleted.") {
+                    state.Jamiyas = state.Jamiyas.filter((jamiya) => jamiya.jcode !== action.meta.arg);
+                }
+            })
+            
+              .addCase(deleteJamiya.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.message = action.payload;  // The rejection message (e.g., "Cannot delete, participants are still present.")
               });
+      
     }
 });
 export default JamiyaSlice.reducer;
