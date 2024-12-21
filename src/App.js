@@ -1,21 +1,31 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Header from './Header';
-import Home from './components/All/Home';
-import JoinToJamia from './components/All/SearchJamiya';
-import AdminBoard from './components/Admin/AdminBoard';
-import UserWheel from './components/All/UserWheel';
-import AdminWheel from './components/Admin/AdminWheel';
-import ResultTable from './components/All/Result';
-import ProtectedRoute from './Validation/ProtectedRoute';
-import AnimatedBackground from './components/AnimatedBackground';
+import React,{useState} from "react";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./components/All/Home";
+import AdminWheel from "./components/Admin/AdminWheel.js";
+import Header from "./Header.js";
+import AddJamiya from "./components/Admin/AddJamiya.js";
+import SearchJamiya from "./components/All/SearchJamiya.js";
+import JamiaDashBorad from "./components/Admin/JamiaDashBoard.js";
+import AdminBoard from './components/Admin/AdminBoard.js';
+import UserWheel from './components/All/UserWheel.js';
+import ProtectedRoute from './Validation/ProtectedRoute.js';
+import AnimatedBackground from "./components/AnimatedBackground.js";
+import Registration from './components/All/Registration';
+import Login from './components/All/Login';
+
 const App = () => {
   return (
     <BrowserRouter>
+    
       <Header />
+      
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/search" element={<JoinToJamia />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/search" element={<SearchJamiya />} />
+        <Route path="/registration" element={<Registration/>} />
+        <Route path="/JamiaDashBorad" element={<JamiaDashBorad />} />
+        <Route path="/addjamiya" element={<AddJamiya />} />
         <Route
           path="/AdminWheel"
           element={
@@ -32,8 +42,7 @@ const App = () => {
             </ProtectedRoute>
           }
         />
-        <Route path="/UserWheel" element={<UserWheel />} />
-        <Route path="/results" element={<ResultTable />} />
+        <Route path="/UserWheel" element={<UserWheel/>} />
       </Routes>
       <AnimatedBackground />
     </BrowserRouter>

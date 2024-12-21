@@ -88,7 +88,7 @@ const Header = () => (
     <h1>Jamia</h1>
     <Nav>
       <Link to="/">Home</Link>|
-      <Link to="/search">Join To Jamia</Link>|
+      <Link to="/login">Join To Jamia</Link>|
       <Link to="/AdminBoard">Admin Board</Link>|
       <Link to="/UserWheel"><LiveBadge>🔴 Live Wheel</LiveBadge></Link>
       <Link to="/results">Results</Link>

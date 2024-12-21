@@ -66,7 +66,7 @@ body {
 /* container */
 .app-container {
   position: relative; 
-  background-color: #756D7E;
+  background-color:  #de8a1b;
   padding: 75px 40px;
   border-radius: 50px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -79,7 +79,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('./Image/logo.png');
+  background-image: url('./components/Images/logo.png');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -96,7 +96,7 @@ body {
 /* container1 */
 .app-container1 {
   position: relative;
-  background-color: #756D7E;
+  background-color: #de8a1b;
   padding: 20px 70px;
   border-radius: 50px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -109,7 +109,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('./Image/logo.png');
+  background-image: url('./components//Images/logo.png');
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
@@ -140,7 +140,7 @@ h1 {
 
 /* Button styles */
 button {
-  background-color: #B7A9A9;
+  background-color: #6a3900;
   color: #fff;
   border: none;
   border-radius: 30px;
@@ -165,7 +165,7 @@ button {
 }
 
 .centered-label{
-  color: #ffffff;
+  color: #0c0c0c;
   font-size: 20px;
   font-weight: 400;
   line-height: 48.41px;
@@ -187,5 +187,8 @@ button {
   gap: 0px;
   opacity: 0px;
 
+}
+.error{
+  color: red;
 }
 
