@@ -3,8 +3,9 @@ import {useNavigate} from 'react-router-dom';
 import {useDispatch,useSelector} from 'react-redux';
 import {useForm} from 'react-hook-form';
 import {yupResolver} from '@hookform/resolvers/yup';
-import {getUser} from "../Features/UserSlice";
-import { LoginValidation } from '../Validation/LoginValidation';
+import { getUser } from "../../Features/UserSlice";
+import { LoginValidation } from '../../Validation/LoginValidation';
+import "../../App.css";
 
 function Login() {
   
@@ -33,12 +34,16 @@ function Login() {
     dispatch(getUser(user));
   }
 
+  const handleNavigation = () => {
+    navigate("/registration"); // Adjust the path if needed
+  };
+
   useEffect(() => {
     if (user && isSuccess) {
-        navigate("/Home");
+        navigate("/search");
     }
     if (isError) {
-        navigate("/Login"); // Redirect if error occurs
+        navigate("/login"); // Redirect if error occurs
         // dispatch(resetUserState()); // Reset user state on failure
     }
 }, [isSuccess, isError, user,navigate]);
@@ -82,11 +87,11 @@ function Login() {
       <br/><br/><br/>
 
       <button type="submit" className="login-button" onClick={submitForm(handleSubmit)}>Login</button>
+      <br/>
+      <br/>
+      <button type="submit" className="login-button" onClick={handleNavigation}>sing-up</button>
     </div>
     <br/>
-    <div>
-    <button type="submit" className="back-button">Back</button>
-    </div>
     </div>
 
     

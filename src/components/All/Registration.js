@@ -3,8 +3,9 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {useDispatch,useSelector} from "react-redux";
 import {useNavigate} from 'react-router-dom';
-import { addUser } from "../Features/UserSlice";
-import {userSchemaValidation} from "../Validation/UserValidation";
+import { addUser } from "../../Features/UserSlice";
+import {userSchemaValidation} from "../../Validation/UserValidation";
+import "../../App.css";
 
 
 const Registeration =()=>{
@@ -127,9 +128,6 @@ const Registeration =()=>{
           <p className="error">{msg}</p>
         </div>
         <br/>
-        <div>
-        <button type="submit" className="back-button">Back</button>
-        </div>
         </div>
     
         

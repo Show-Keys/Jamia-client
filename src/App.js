@@ -10,8 +10,8 @@ import AdminBoard from './components/Admin/AdminBoard.js';
 import UserWheel from './components/All/UserWheel.js';
 import ProtectedRoute from './Validation/ProtectedRoute.js';
 import AnimatedBackground from "./components/AnimatedBackground.js";
-import Registration from './components/Registration';
-import Login from './components/Login';
+import Registration from './components/All/Registration';
+import Login from './components/All/Login';
 
 const App = () => {
   return (
@@ -21,7 +21,9 @@ const App = () => {
       
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/search" element={<SearchJamiya />} />
+        <Route path="/registration" element={<Registration/>} />
         <Route path="/JamiaDashBorad" element={<JamiaDashBorad />} />
         <Route path="/addjamiya" element={<AddJamiya />} />
         <Route
