@@ -1,47 +1,45 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-
-export const getAdmin = createAsyncThunk("administration/getAdmin", async (adminData) => {
-    try {
-      const response = await axios.post("http://localhost:5000/api/adminLogin", {
-            email:adminData.email,
-            password:adminData.password,
-        });
-
-        return response.data.Admins;
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
+// Redux thunk to fetch all users
+export const fetchAllUsers = createAsyncThunk(
+    'admin/fetchAllUsers',
+    async (_, { rejectWithValue }) => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/users'); // Adjust the URL if needed
+        return response.data; // Return users data
+      } catch (error) {
+        return rejectWithValue(error.response?.data || error.message); // Handle error
+      }
+    }
+  );
   
-    } catch (error) {
-      alert("Invaild Credentials: "+error);
-      return{};
-    }
-  });
 
-  const initialValues = {
-    Admins:{},
-    message:"",
-    isLoading:false,
-    isSucces:false,
-    isError:false
-  };
 
-export const AdminReducer = createSlice({
-    name: "administration",
-    initialState: initialValues,
+
+const adminSlice = createSlice({
+    name: 'admin',
+    initialState: {
+      users: [],
+      loading: false,
+      error: null,
+    },
     reducers: {},
-    extraReducers:(builder)=>{
-      builder.addCase(getAdmin.pending,(state)=>{
-              state.isLoading=true;
-              })
-             .addCase(getAdmin.fulfilled,(state,action)=>{
-              state.isLoading=false;
-              state.isSucces=true;
-              state.Admins=action.payload;
-             })
-             .addCase(getAdmin.rejected,(state)=>{
-              state.isLoading=false;
-              state.isError=true;
-             })
-    }
+    extraReducers: (builder) => {
+      builder
+        .addCase(fetchAllUsers.pending, (state) => {
+          state.loading = true; // Set loading state
+          state.error = null; // Reset any previous error
+        })
+        .addCase(fetchAllUsers.fulfilled, (state, action) => {
+          state.loading = false; // Set loading to false once data is fetched
+          state.users = action.payload; // Store the fetched users in the state
+        })
+        .addCase(fetchAllUsers.rejected, (state, action) => {
+          state.loading = false; // Set loading to false
+          state.error = action.payload || 'Failed to fetch users'; // Set error message
+        });
+    },
   });
-
-export default AdminReducer.reducer;
+  
+  export default adminSlice.reducer;
+  
