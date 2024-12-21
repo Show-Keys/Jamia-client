@@ -1,90 +1,79 @@
-import React, { useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./components/All/Home";
-import AdminWheel from "./components/Admin/AdminWheel.js";
-import Header from "./Header.js";
-import AddJamiya from "./components/Admin/AddJamiya.js";
-import SearchJamiya from "./components/All/SearchJamiya.js";
-import JamiaDashBorad from "./components/Admin/JamiaDashBoard.js";
-import AdminBoard from './components/Admin/AdminBoard.js';
-import UserWheel from './components/All/UserWheel.js';
-import ProtectedRoute from './Validation/ProtectedRoute.js';
-import AnimatedBackground from "./components/AnimatedBackground.js";
-import Login from "./components/All/Login.js";
-import Registeration from "./components/All/Registration.js";
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import AdminUsers from "./components/Admin/AdminUsers.js";
-import WheelComponent from "./components/Admin/WheelComponent.js";
-import AdminDashBordUsersMangment from "./components/Admin/AdminDashBordUsersMangment.js";
-
-
+import Header from './Header';
+import Home from './components/All/Home';
+import Login from './components/All/Login';
+import Registeration from './components/All/Registration';
+import AddJamiya from './components/Admin/AddJamiya';
+import JamiaDashBorad from './components/Admin/JamiaDashBoard';
+import AdminDashBordUsersMangment from './components/Admin/AdminDashBordUsersMangment';
+import AdminUsers from './components/Admin/AdminUsers';
+import AdminWheel from './components/Admin/AdminWheel';
+import UserWheel from './components/All/UserWheel';
+import ProtectedRoute from './components/ProtectedRoute';
+import AnimatedBackground from './components/AnimatedBackground';
 const App = () => {
+  const user = useSelector((state) => state.user?.user);
+  const isAdmin = useSelector((state) => state.user?.isAdmin);
 
-  const  user  = useSelector((state) => state.auth);
-  const isAdmin  = useSelector((state) => state.auth.isAdmin);
-  console.log(user,isAdmin);
   return (
     <BrowserRouter>
-
+    
       <Header />
-
       <Routes>
-      <Route path="/wheel" element={<WheelComponent />} />
-      <Route path="/Register" element={<Registeration />} />
-      <Route path="/addjamiya" element={<AddJamiya />} />
-      <Route path="/JamiaDashBorad" element={<JamiaDashBorad />} />
-      <Route path="/Login" element={<Login />} />
-      <Route path="/viewusers/:jcode" element={<AdminDashBordUsersMangment />} />
-      <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/Register" element={<Registeration />} />
+        <Route path="/Login" element={<Login />} />
+        <Route path="/UserWheel" element={<UserWheel />} />
         {user && isAdmin ? (
           <>
-           
-            <Route path="/UserManagement" element={<AdminUsers />} />
-            
-            <Route path="/UserManagement" element={<AdminUsers />} />
-            
-            
             <Route
-                path="/AdminWheel"
-                element={
-                  <ProtectedRoute>
-                    <AdminWheel />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/AdminBoard"
-                element={
-                  <ProtectedRoute>
-                    <AdminBoard />
-                  </ProtectedRoute>
-                }
-              />
-
+              path="/addjamiya"
+              element={
+                <ProtectedRoute>
+                  <AddJamiya />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/JamiaDashBorad"
+              element={
+                <ProtectedRoute>
+                  <JamiaDashBorad />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/viewusers/:jcode"
+              element={
+                <ProtectedRoute>
+                  <AdminDashBordUsersMangment />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/UserManagement"
+              element={
+                <ProtectedRoute>
+                  <AdminUsers />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/AdminWheel"
+              element={
+                <ProtectedRoute>
+                  <AdminWheel />
+                </ProtectedRoute>
+              }
+            />
           </>
-
-
         ) : (
-          { user } ? (
-            <>
-              <Route path="/search" element={<SearchJamiya />} />
-              
-            </>
-          ) :
-
-            (
-              <>
-                
-              </>
-            )
-
+          <Route path="/Login" element={<Login />} />
         )}
-
-
-
-        <Route path="/UserWheel" element={<UserWheel />} />
       </Routes>
-      <AnimatedBackground />
+      <AnimatedBackground/>
     </BrowserRouter>
   );
 };
