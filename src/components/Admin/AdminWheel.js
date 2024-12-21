@@ -1,13 +1,12 @@
-// src/Components/WheelComponent.js
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Wheel } from 'react-custom-roulette';
 import styled from 'styled-components';
 import confetti from 'canvas-confetti';
 import Swal from 'sweetalert2';
 import jamiaLogo from '../Images/jamia50.png';
 import { useSelector, useDispatch } from 'react-redux';
-import { addItem, deleteItem } from '../../Features/WheelSlice';
+import { fetchWheelItems, addWheelItem, deleteWheelItem } from '../../Features/WheelSlice';
+import { addResult } from '../../Features/ResultSlice'; // Assuming you have a ResultSlice for managing results
 
 const Container = styled.div`
   display: flex;
@@ -95,9 +94,11 @@ const AdminWheel = () => {
   const [prizeNumber, setPrizeNumber] = useState(0);
   const [newItem, setNewItem] = useState('');
 
+  useEffect(() => {
+    dispatch(fetchWheelItems());
+  }, [dispatch]);
 
-// Handle spin
-const handleSpinClick = () => {
+  const handleSpinClick = () => {
     if (data.length === 0) {
       Swal.fire({
         icon: 'warning',
@@ -112,31 +113,34 @@ const handleSpinClick = () => {
     setPrizeNumber(randomPrize);
     setMustSpin(true);
   };
-  //width: 100%; max-width: 300px
+
   const handleStopSpinning = () => {
     setMustSpin(false);
     launchCustomConfetti();
-  
+
+    const winner = data[prizeNumber];
+    const result = {
+      date: new Date().toLocaleString(),
+      winner: winner.option,
+      number: prizeNumber,
+      amount: 100, // Example amount, replace with actual amount from payment
+      status: 'pending', // Replace with actual status from admin user management
+    };
+
+    dispatch(addResult(result));
+    dispatch(deleteWheelItem(winner._id));
+
     Swal.fire({
       icon: 'success',
       title: '🎉 Congratulations! 🎉',
       html: `
-        <div style="  
-          position: relative;
-          width: 150px;
-          height: 180px;
-          margin: 0 auto; /* Center the container */
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          margin-bottom: 10px;
-        ">
+        <div style="position: relative; width: 150px; height: 180px; margin: 0 auto; display: flex; justify-content: center; align-items: center; margin-bottom: 10px;">
           <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOGp2ZmJmbml5NWJjZDR6aDY3ZnZsZXR6bzlteGR3YjdqYmEyNzY0cCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ExpUaMtQjl0RVlSwn8/giphy.gif" 
             alt="Money" 
             style="position: absolute; width: 300px; transform: rotate(0deg) translateY(0px);" />
         </div>
         <strong>Winner is:</strong> <br>
-        <h2 style="color: #ff8c00; margin-top: 10px;">${data[prizeNumber].option}</h2>
+        <h2 style="color: #ff8c00; margin-top: 10px;">${winner.option}</h2>
       `,
       timer: 5000,
       timerProgressBar: true,
@@ -144,16 +148,10 @@ const handleSpinClick = () => {
       confirmButtonColor: '#ff8c00',
     });
   };
-  
-  
-  
-  
-  
-  // Handle add item
+
   const handleAddItem = () => {
     const trimmedItem = newItem.trim();
-  
-    // Check for empty input
+
     if (trimmedItem === '') {
       Swal.fire({
         icon: 'error',
@@ -164,8 +162,7 @@ const handleSpinClick = () => {
       });
       return;
     }
-  
-    // Check for character limit (50 characters)
+
     if (trimmedItem.length > 10) {
       Swal.fire({
         icon: 'error',
@@ -176,8 +173,7 @@ const handleSpinClick = () => {
       });
       return;
     }
-  
-    // Check for duplicate items
+
     if (data.some((item) => item.option.toLowerCase() === trimmedItem.toLowerCase())) {
       Swal.fire({
         icon: 'warning',
@@ -188,24 +184,24 @@ const handleSpinClick = () => {
       });
       return;
     }
-  
-    // Add the new item to the wheel
-    dispatch(addItem(trimmedItem));
+
+    dispatch(addWheelItem(trimmedItem));
     setNewItem('');
-  
-    // Focus back on the input field
     document.getElementById('item-input').focus();
   };
-  
-  
 
-  // Handle delete item
-  const handleDeleteItem = (index) => {
-    const updatedData = data.filter((_, i) => i !== index);
-    dispatch(deleteItem(index));
-  
-    // Check if the wheel is now empty after deletion
-    if (updatedData.length === 0) {
+  const handleDeleteItem = (id) => {
+    dispatch(deleteWheelItem(id)).then(() => {
+      Swal.fire({
+        icon: 'success',
+        title: 'Item Deleted',
+        text: 'The item has been successfully deleted from the wheel.',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#ff8c00',
+      });
+    });
+
+    if (data.length === 1) {
       Swal.fire({
         icon: 'info',
         title: 'Wheel is Empty',
@@ -215,12 +211,7 @@ const handleSpinClick = () => {
       });
     }
   };
-  
-  
 
-
-
-  // Launch custom confetti
   const launchCustomConfetti = () => {
     const duration = 3000;
     const end = Date.now() + duration;
@@ -243,7 +234,6 @@ const handleSpinClick = () => {
 
     frame();
   };
-  
 
   return (
     <Container>
@@ -255,33 +245,31 @@ const handleSpinClick = () => {
         value={newItem}
         onChange={(e) => setNewItem(e.target.value)}
       />
-      
       <Button onClick={handleAddItem}>Add Item</Button>
+
       <WheelContainer>
         <CenterLogo src={jamiaLogo} alt="Center Logo" />
-        {data.length>0?(
+        {data.length > 0 ? (
           <Wheel
-          mustStartSpinning={mustSpin}
-          prizeNumber={prizeNumber}
-          data={data}
-          onStopSpinning={handleStopSpinning}
-          backgroundColors={['#FF0000', '#FFD700', '#32CD32', '#FF69B4', '#FF8C00', '#87CEEB']}
-          textColors={['#FFFFFF']}
-          outerBorderColor="#FFD700"
-          outerBorderWidth={8}
-          radiusLineColor="#FFFFFF"
-          radiusLineWidth={2}
-          fontSize={18}
-        />
-        ):(
+            mustStartSpinning={mustSpin}
+            prizeNumber={prizeNumber}
+            data={data}
+            onStopSpinning={handleStopSpinning}
+            backgroundColors={['#FF0000', '#FFD700', '#32CD32', '#FF69B4', '#FF8C00', '#87CEEB']}
+            textColors={['#FFFFFF']}
+            outerBorderColor="#FFD700"
+            outerBorderWidth={8}
+            radiusLineColor="#FFFFFF"
+            radiusLineWidth={2}
+            fontSize={18}
+          />
+        ) : (
           <p style={{ color: '#ff8c00', fontSize: '1.2rem', marginTop: '20px' }}>
-          The wheel is empty. Please add items to spin.
-        </p>
+            The wheel is empty. Please add items to spin.
+          </p>
         )}
-        
-        
-
       </WheelContainer>
+
       <Button onClick={handleSpinClick} disabled={data.length === 0}>
         {data.length > 0 ? 'Spin the Wheel' : 'No Items to Spin'}
       </Button>
@@ -292,7 +280,7 @@ const handleSpinClick = () => {
           {data.map((item, index) => (
             <ListItem key={index}>
               {item.option}
-              <Button onClick={() => handleDeleteItem(index)} style={{ padding: '5px 10px' }}>
+              <Button onClick={() => handleDeleteItem(item._id)} style={{ padding: '5px 10px' }}>
                 Delete
               </Button>
             </ListItem>
