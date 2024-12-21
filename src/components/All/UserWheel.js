@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Wheel } from 'react-custom-roulette';
-import styled ,{keyframes}from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import confetti from 'canvas-confetti';
 import Swal from 'sweetalert2';
 import jamiaLogo from '../Images/jamia50.png';
-import { useSelector } from 'react-redux'; 
+import axios from 'axios';
 import { motion } from 'framer-motion';
 // User Wheel
 
@@ -118,9 +118,23 @@ const CenterLogo = styled.img`
 `;
 
 const UserWheel = () => {
-  const data = useSelector((state) => state.wheel.data);
+  const [data, setData] = useState([]);
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(0);
+
+  // Fetch data from server
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('/api/wheel-data');
+        setData(response.data);
+      } catch (error) {
+        console.error('Error fetching wheel data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   // Handle spin
   const handleSpinClick = () => {
@@ -141,13 +155,13 @@ const UserWheel = () => {
 
   // Handle stop spinning
   const handleStopSpinning = () => {
-      setMustSpin(false);
-      launchCustomConfetti();
-    
-      Swal.fire({
-        icon: 'success',
-        title: '🎉 Congratulations! 🎉',
-        html: `
+    setMustSpin(false);
+    launchCustomConfetti();
+
+    Swal.fire({
+      icon: 'success',
+      title: '🎉 Congratulations! 🎉',
+      html: `
         <div style="  
           position: relative;
           width: 150px;
@@ -165,12 +179,12 @@ const UserWheel = () => {
         <strong>Winner is:</strong> <br>
         <h2 style="color: #ff8c00; margin-top: 10px;">${data[prizeNumber].option}</h2>
       `,
-        timer: 5000,
-        timerProgressBar: true,
-        confirmButtonText: 'Exit',
-        confirmButtonColor: '#ff8c00',
-      });
-    };
+      timer: 5000,
+      timerProgressBar: true,
+      confirmButtonText: 'Exit',
+      confirmButtonColor: '#ff8c00',
+    });
+  };
 
   // Launch custom confetti
   const launchCustomConfetti = () => {

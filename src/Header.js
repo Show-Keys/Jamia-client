@@ -91,7 +91,7 @@ const Header = () => (
       <Link to="/search">Join To Jamia</Link>|
       <Link to="/AdminBoard">Admin Board</Link>|
       <Link to="/UserWheel"><LiveBadge>🔴 Live Wheel</LiveBadge></Link>
-      
+      <Link to="/results">Results</Link>
     </Nav>
   </HeaderContainer>
 );
