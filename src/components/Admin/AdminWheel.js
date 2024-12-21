@@ -199,6 +199,7 @@ const AdminWheel = () => {
         confirmButtonText: 'OK',
         confirmButtonColor: '#ff8c00',
       });
+      dispatch(fetchWheelItems()); // Fetch the updated list of items
     });
 
     if (data.length === 1) {
