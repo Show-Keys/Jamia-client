@@ -93,17 +93,6 @@ const Login = () => {
             mt: 2,
           }}
         >
-          <IconButton color="primary" onClick={() => navigate(-1)}>
-            <ArrowBackIcon />
-          </IconButton>
-          <Typography
-            variant="button"
-            display="block"
-            gutterBottom
-            sx={{ ml: 1, color: "#fff" }}
-          >
-            Back
-          </Typography>
         </Box>
         <Typography
           variant="body2"

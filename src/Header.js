@@ -90,9 +90,9 @@ const Header = () => (
       <Link to="/">Home</Link>|
       <Link to="/login">Join To Jamia</Link>|
       <Link to="/AdminBoard">Admin Board</Link>|
+      <Link to="/results">Results</Link>|
+      <Link to="/aboutus">About Us</Link>|
       <Link to="/UserWheel"><LiveBadge>🔴 Live Wheel</LiveBadge></Link>
-      <Link to="/results">Results</Link>
-      <Link to="/aboutus">About Us</Link>
     </Nav>
   </HeaderContainer>
 );
