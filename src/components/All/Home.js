@@ -77,7 +77,7 @@ const Home = () => {
       confirmButtonColor: "#ff8c00",
     }).then((result) => {
       if (result.isConfirmed) {
-        window.location.href = "/search";
+        window.location.href = "/login";
       }
     });
   };
