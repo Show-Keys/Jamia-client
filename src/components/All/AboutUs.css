@@ -1,0 +1,78 @@
+/* AboutUs.css */
+
+.about-us-container {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .about-us-container h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .about-us-container p {
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 20px;
+  }
+  
+  .contact-details {
+    margin-top: 30px;
+  }
+  
+  .contact-details h2 {
+    color: #444;
+    margin-bottom: 10px;
+  }
+  
+  .contact-icons {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .contact-icons li {
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+  }
+  
+  .contact-icons li svg {
+    margin-right: 10px;
+    color: #444;
+  }
+  
+  .contact-icons a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .contact-icons a:hover {
+    text-decoration: underline;
+  }
+  
+  .location {
+    margin-top: 30px;
+  }
+  
+  .location h2 {
+    color: #444;
+    margin-bottom: 10px;
+  }
+  
+  .location p {
+    color: #555;
+    line-height: 1.6;
+  }
+  
+  .map-container iframe {
+    max-width: 100%;
+    height: auto;
+  }
+  

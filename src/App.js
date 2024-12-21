@@ -12,6 +12,7 @@ import ProtectedRoute from './Validation/ProtectedRoute.js';
 import AnimatedBackground from "./components/AnimatedBackground.js";
 import Registration from './components/All/Registration';
 import Login from './components/All/Login';
+import AboutUs from "./components/All/AboutUs.js";
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
         <Route path="/registration" element={<Registration/>} />
         <Route path="/JamiaDashBorad" element={<JamiaDashBorad />} />
         <Route path="/addjamiya" element={<AddJamiya />} />
+        <Route path="/aboutus" element={<AboutUs />} />
         <Route
           path="/AdminWheel"
           element={
