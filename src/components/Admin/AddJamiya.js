@@ -18,11 +18,14 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { saveJamiya } from "../../Features/jamiyaSlice";
 import { clearMessage } from "../../Features/jamiyaSlice";
+import { toast } from "react-toastify";
+
+
+
 
 const AddJamiya = () => {
   const today = new Date().toISOString().split("T")[0];
   const [code, setCode] = useState("");
-  const [noOfMembers, setNoOfMembers] = useState(null);
   const [noOfMonths, setNoOfMonths] = useState(null);
   const [startDay, setStartDay] = useState(today);
   // const [amountOfShare, setAmountOfShare] = useState("");
@@ -76,15 +79,13 @@ const AddJamiya = () => {
   const handleSubmit = () => {
     const jamiya = {
       code: code,
-      nome: noOfMembers,
       nomn: noOfMonths,
       startDay: startDay,
       endDate: endDate,
       description: description,
     };
     dispatch(saveJamiya(jamiya));
-    console.log(jamiya);
-    alert("Jamiya added successfully!", jamiya);
+    toast.success("Jamiya added successfully!");  
   };
 
   return (
@@ -129,24 +130,22 @@ const AddJamiya = () => {
               {errors.code && <FormFeedback>{errors.code.message}</FormFeedback>}
             </FormGroup>
 
-            {/* No. of Members */}
-            <FormGroup>
-              <Label for="noOfMembers">No. of Members</Label>
+          
+             {/* Start Day */}
+             <FormGroup>
+              <Label for="startDay">Start Day</Label>
               <input
-                type="number"
-                className={`form-control ${
-                  errors.noOfMembers ? "is-invalid" : ""
-                }`}
-                {...register("noOfMembers", {
-                  value: noOfMembers,
-                  onChange: (e) => setNoOfMembers(e.target.value),
+                type="date"
+                className={`form-control ${errors.startDay ? "is-invalid" : ""}`}
+                {...register("startDay", {
+                  value: startDay || "",
+                  onChange: (e) => setStartDay(e.target.value),
                 })}
               />
-              {errors.noOfMembers && (
-                <FormFeedback>{errors.noOfMembers.message}</FormFeedback>
+              {errors.startDay && (
+                <FormFeedback>{errors.startDay.message}</FormFeedback>
               )}
             </FormGroup>
-
             {/* No. of Months */}
             <FormGroup>
               <Label for="noOfMonths">No. of Months</Label>
@@ -166,21 +165,7 @@ const AddJamiya = () => {
             </FormGroup>
           </Col>
           <Col>
-            {/* Start Day */}
-            <FormGroup>
-              <Label for="startDay">Start Day</Label>
-              <input
-                type="date"
-                className={`form-control ${errors.startDay ? "is-invalid" : ""}`}
-                {...register("startDay", {
-                  value: startDay || "",
-                  onChange: (e) => setStartDay(e.target.value),
-                })}
-              />
-              {errors.startDay && (
-                <FormFeedback>{errors.startDay.message}</FormFeedback>
-              )}
-            </FormGroup>
+           
 
             {/* End Date */}
             <FormGroup>
@@ -240,7 +225,7 @@ const AddJamiya = () => {
         {/* Submit Button */}
         <Row>
           <FormGroup className="text-center mt-4">
-            <div style={{ color: "red" }}>{msg}</div>
+          {msg && <div className="alert alert-danger">{msg}</div>}
             <Button color="primary" onClick={submitForm(handleSubmit)}>
               Add Jamiya
             </Button>

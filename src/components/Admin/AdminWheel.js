@@ -1,5 +1,3 @@
-// src/Components/WheelComponent.js
-
 import React, { useState } from 'react';
 import { Wheel } from 'react-custom-roulette';
 import styled from 'styled-components';
@@ -95,9 +93,8 @@ const AdminWheel = () => {
   const [prizeNumber, setPrizeNumber] = useState(0);
   const [newItem, setNewItem] = useState('');
 
-
-// Handle spin
-const handleSpinClick = () => {
+  // Handle spin
+  const handleSpinClick = () => {
     if (data.length === 0) {
       Swal.fire({
         icon: 'warning',
@@ -112,7 +109,7 @@ const handleSpinClick = () => {
     setPrizeNumber(randomPrize);
     setMustSpin(true);
   };
-  //width: 100%; max-width: 300px
+
   const handleStopSpinning = () => {
     setMustSpin(false);
     launchCustomConfetti();
@@ -144,11 +141,7 @@ const handleSpinClick = () => {
       confirmButtonColor: '#ff8c00',
     });
   };
-  
-  
-  
-  
-  
+
   // Handle add item
   const handleAddItem = () => {
     const trimmedItem = newItem.trim();
@@ -196,8 +189,6 @@ const handleSpinClick = () => {
     // Focus back on the input field
     document.getElementById('item-input').focus();
   };
-  
-  
 
   // Handle delete item
   const handleDeleteItem = (index) => {
@@ -215,10 +206,6 @@ const handleSpinClick = () => {
       });
     }
   };
-  
-  
-
-
 
   // Launch custom confetti
   const launchCustomConfetti = () => {
@@ -243,7 +230,6 @@ const handleSpinClick = () => {
 
     frame();
   };
-  
 
   return (
     <Container>
@@ -273,14 +259,9 @@ const handleSpinClick = () => {
           radiusLineWidth={2}
           fontSize={18}
         />
-        ):(
-          <p style={{ color: '#ff8c00', fontSize: '1.2rem', marginTop: '20px' }}>
+        ):(<p style={{ color: '#ff8c00', fontSize: '1.2rem', marginTop: '20px' }}>
           The wheel is empty. Please add items to spin.
-        </p>
-        )}
-        
-        
-
+        </p>)}
       </WheelContainer>
       <Button onClick={handleSpinClick} disabled={data.length === 0}>
         {data.length > 0 ? 'Spin the Wheel' : 'No Items to Spin'}
