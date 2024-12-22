@@ -14,7 +14,7 @@ const Container = styled.div`
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #f4f4f4;
+  background-color:rgb(221, 217, 208);
   text-align: center;
   padding: 20px;
 `;
@@ -94,9 +94,9 @@ const AdminWheel = () => {
   const [prizeNumber, setPrizeNumber] = useState(0);
   const [newItem, setNewItem] = useState('');
 
-  useEffect(() => {
-    dispatch(fetchWheelItems());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchWheelItems());
+  // }, [dispatch]);
 
   const handleSpinClick = () => {
     if (data.length === 0) {
@@ -185,7 +185,7 @@ const AdminWheel = () => {
       return;
     }
 
-    dispatch(addWheelItem(trimmedItem));
+    // dispatch(addWheelItem(trimmedItem));
     setNewItem('');
     document.getElementById('item-input').focus();
   };
