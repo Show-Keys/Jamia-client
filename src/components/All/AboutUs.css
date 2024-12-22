@@ -52,27 +52,3 @@
     color: #007bff;
     text-decoration: none;
   }
-  
-  .contact-icons a:hover {
-    text-decoration: underline;
-  }
-  
-  .location {
-    margin-top: 30px;
-  }
-  
-  .location h2 {
-    color: #444;
-    margin-bottom: 10px;
-  }
-  
-  .location p {
-    color: #555;
-    line-height: 1.6;
-  }
-  
-  .map-container iframe {
-    max-width: 100%;
-    height: auto;
-  }
-  

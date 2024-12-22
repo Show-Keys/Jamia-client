@@ -12,7 +12,7 @@ const HeaderContainer = styled.header`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(0px + 2vmin);
+  font-size: calc(0px + 1.6vmin);
   color: white;
   border-radius: 20px;
   padding: 20px;
@@ -33,7 +33,7 @@ const HeaderContainer = styled.header`
 const Nav = styled.nav`
   margin-top: 1rem;
   display: flex;
-  gap: 20px;
+  gap: 10px;
 
   a {
     color:rgb(243, 233, 210);
@@ -125,3 +125,4 @@ const Header = () => {
 };
 
 export default Header;
+

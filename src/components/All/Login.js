@@ -1,78 +1,103 @@
-import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
-import { loginUser } from "../../Features/UserSlice"; // Assuming you have this action
-import "../../App.css";
+import { Col, Container,FormGroup,Row,Form, Label, Input, Button } from 'reactstrap';
+import  {LoginValidation}  from '../../Validation/LoginValidation';
+import '../../App.css'; // Make sure to create a CSS file for styling
+import React, { useEffect, useState } from 'react';
+import {useNavigate} from 'react-router-dom';
+import {useDispatch,useSelector} from 'react-redux';
+import {useForm} from 'react-hook-form';
+import {yupResolver} from '@hookform/resolvers/yup';
+import {loginUser} from "../../Features/UserSlice";
 
-const Login = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const dispatch = useDispatch();
+
+function Login() {
+  
+
+  let [email, setemail] = useState("");
+  let [password, setPassword] = useState("");
+
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors } } = useForm();
-  const { user, isSuccess, isError, message } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
+   const msg=useSelector((state)=>state.auth.message);
+
+  // const user = useSelector((state) => state.counter.user);
+  // const isSuccess = useSelector((state) => state.counter.isSuccess);
+  // const isError = useSelector((state) => state.counter.isError);
+
+
+  const {
+    register,
+    handleSubmit:submitForm,
+    formState:{errors},
+  }=useForm({resolver:yupResolver(LoginValidation)});
+
+  const handleSubmit=()=>{
+    const user={email:email,password:password};
+    dispatch(loginUser(user));
+  }
+  
+  const handleregister=()=>{
+    navigate("/Register");
+  }
   useEffect(() => {
-    if (isSuccess) {
-      navigate("/search"); // Navigate to SearchJamiya on successful login
+    if (msg) {
+        navigate("/search");
     }
-    if (isError) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Login Failed',
-        text: message || 'Login failed. Please try again.',
-      });
+    else{
+        navigate("/Login"); // Redirect if error occurs
+        // dispatch(resetUserState()); // Reset user state on failure
     }
-  }, [isSuccess, isError, message, navigate]);
+}, [msg, navigate]);
 
-  const onSubmit = (data) => {
-    dispatch(loginUser({ uname: data.username, password: data.password }));
-  };
 
   return (
+    <div>
     <div className="app-container">
       <h1>Login</h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="form-group">
-          <label htmlFor="username" className="centered-label">User Name :</label>
-          <br/>
-          <input
-            type="text"
-            id="username"
-            className="form-input"
-            {...register('username', {
-              value: username,
-              onChange: (e) => setUsername(e.target.value),
-              required: 'Username is required',
-            })}
-          />
-          <p className='error'>{errors.username?.message}</p>
-        </div>
+      <div className="form-group">
+        <label htmlFor="email" className="centered-label">email :</label>
         <br/>
-        <div className="form-group">
-          <label htmlFor="password" className="centered-label">Password :</label>
-          <br/>
-          <input
-            type="password"
-            id="password"
-            className="form-input"
-            {...register('password', {
-              value: password,
-              onChange: (e) => setPassword(e.target.value),
-              required: 'Password is required',
-            })}
-          />
-          <p className='error'>{errors.password?.message}</p>
-        </div>
-        <br/><br/><br/>
-        <button type="submit" className="login-button">Login</button>
-      </form>
+        <input
+          type="email"
+          id="email"
+          className="form-input"
+          {...register('email',{
+            value:email,
+            onChange:(e)=>setemail(e.target.value)
+          })}
+        />
+        <p className="error-message">{errors.email?.message}</p>
+      </div>
+
       <br/>
-      <button type="button" className="back-button" onClick={() => navigate(-1)}>Back</button>
+
+      <div className="form-group">
+        <label htmlFor="password" className="centered-label">Password :</label>
+        <br/>
+        <input
+          type="password"
+          id="password"
+          className="form-input"
+          {...register('password',{
+            value:password,
+            onChange:(e)=>setPassword(e.target.value)
+          })}
+        />
+        <p className='error'>{errors.password?.message}</p>
+      </div>
+      <br/><br/><br/>
+
+      <button type="submit" className="login-button" onClick={submitForm(handleSubmit)}>Login</button>
     </div>
+    <br/>
+    <div>
+    <button type="submit" className="back-button" onClick={handleregister}>Registration</button>
+    </div>
+    <div>{msg}</div>
+    </div>
+
+    
   );
-};
+}
 
 export default Login;

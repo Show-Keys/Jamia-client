@@ -1,18 +1,16 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './Features/UserSlice';
+import JamiyaSlice from './Features/jamiyaSlice';
 import wheelReducer from './Features/WheelSlice';
-import jamiyaReducer from './Features/jamiyaSlice';
-// import adminReducer from './Features/AdminSlice';
-import resultReducer from './Features/ResultSlice';
+import authReducer from './Features/UserSlice';
+import  adminSlice  from './Features/adminSlice';
 
-const store = configureStore({
+const store  = configureStore({
   reducer: {
-    user: userReducer,
+    jamiyas:JamiyaSlice,
     wheel: wheelReducer,
-    jamiyas: jamiyaReducer,
-    // administration: adminReducer,
-    results: resultReducer,
+    auth: authReducer,
+    admin:adminSlice,
   },
 });
 
-export default store;
+export default store ;
