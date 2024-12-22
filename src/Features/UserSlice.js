@@ -122,10 +122,10 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 // Async thunk for user registration
-export const registerUser = createAsyncThunk('https://jamia-server.onrender.com/auth/registerUser',async (userData, { rejectWithValue }) => {
+export const registerUser = createAsyncThunk('auth/registerUser',async (userData, { rejectWithValue }) => {
   console.log(userData); 
   try {
-      const response = await axios.post('https://jamia-server.onrender.com/api/register',{
+      const response = await axios.post('http://localhost:5000/api/register',{
         
         name:userData.name,
         email:userData.email,
@@ -148,7 +148,7 @@ export const loginUser = createAsyncThunk(
   'auth/loginUser',
   async (loginData, { rejectWithValue }) => {
     try {
-      const response = await axios.post('https://jamia-server.onrender.com/api/login',{       
+      const response = await axios.post('http://localhost:5000/api/login',{       
         email:loginData.email,
         password:loginData.password,
       });
