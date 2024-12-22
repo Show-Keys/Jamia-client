@@ -148,6 +148,7 @@ import {useNavigate} from 'react-router-dom';
 import  {registerUser}  from "../../Features/UserSlice";
 import {userSchemaValidation} from "../../Validation/UserValidation";
 import '../../App.css'; // Make sure to create a CSS file for styling
+import { Button } from 'bootstrap';
 
 
 const Registeration =()=>{
@@ -283,7 +284,7 @@ const Registeration =()=>{
           </div> */}
           <br/><br/>
     
-          <button type="submit" className="login-button"  onClick={submitForm(handleSubmit)}>Register</button>
+          <Button type="submit" className="login-button"  onClick={submitForm(handleSubmit)}>Register</Button>
           {/*<p className="error">{msg}</p>*/}
         </div>
         <br/>
