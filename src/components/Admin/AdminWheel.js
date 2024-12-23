@@ -6,7 +6,7 @@ import Swal from 'sweetalert2';
 import jamiaLogo from '../Images/jamia50.png';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchWheelItems, addWheelItem, deleteWheelItem, setLive } from '../../Features/WheelSlice';
-import { addResult } from '../../Features/ResultSlice'; // Assuming you have a ResultSlice for managing results
+import { addResultToServer } from '../../Features/ResultSlice'; // Assuming you have a ResultSlice for managing results
 
 const Container = styled.div`
   display: flex;
@@ -124,10 +124,10 @@ const AdminWheel = () => {
       winner: winner.option,
       number: prizeNumber,
       amount: 100, // Example amount, replace with actual amount from payment
-      status: 'pending', // Replace with actual status from admin user management
+      status: 'ng', // Replace with actual status from admin user management
     };
 
-    dispatch(addResult(result));
+    dispatch(addResultToServer(result));
     dispatch(deleteWheelItem(winner._id));
 
     Swal.fire({

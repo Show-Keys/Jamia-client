@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   Row,
@@ -6,140 +6,115 @@ import {
   Input,
   Button,
   Table,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
   Modal,
   ModalHeader,
   ModalBody,
   ModalFooter,
+  Alert,
   Spinner,
 } from "reactstrap";
+import { Typography } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
-import { getJamiya } from "../../Features/jamiyaSlice";
+import { getJamiyas } from "../../Features/jamiyaSlice";
+import { useNavigate } from "react-router-dom";
 
 const SearchJamiya = () => {
-  const [code, setCode] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [selectedDescription, setSelectedDescription] = useState(null); // For modal
-  const [isModalOpen, setModalOpen] = useState(false);
-
-  const itemsPerPage = 5; // Number of items per page
-  const Jamiya = useSelector((state) => state.jamiyas.Jamiyas || []);
-  const msg = useSelector((state) => state.jamiyas.message);
-  const isLoading = useSelector((state) => state.jamiyas.isLodaing);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { jamiyas, loading, error, message } = useSelector((state) => state.jamiya || {});
 
-  const handleSubmit = () => {
-    dispatch(getJamiya(code));
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [selectedDescription, setSelectedDescription] = useState(null);
+
+  useEffect(() => {
+    dispatch(getJamiyas());
+  }, [dispatch]);
+
+  const handleSearch = () => {
+    dispatch(getJamiyas(searchTerm));
   };
 
-  // Pagination Logic
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = Array.isArray(Jamiya) ? Jamiya.slice(indexOfFirstItem, indexOfLastItem) : [Jamiya];
+  const handleCardClick = (jamiyaId) => {
+    navigate(`/jamiya/${jamiyaId}`);
+  };
 
-  const totalPages = Math.ceil((Array.isArray(Jamiya) ? Jamiya.length : 1) / itemsPerPage);
-
-  const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
-
-  // Modal Toggle
   const toggleModal = () => setModalOpen(!isModalOpen);
 
   return (
-    <Container className="search-page">
-      <Row className="justify-content-center align-items-center">
-        <Col md={8} className="text-center">
-          <h1 className="mb-4">Search Page</h1>
-          <div className="search-box d-flex mb-4">
-            <Input
-              type="text"
-              placeholder="Search here..."
-              className="me-2 search-input"
-              onChange={(e) => setCode(e.target.value)}
-            />
-            <Button color="primary" className="search-button" onClick={handleSubmit}>
-              Search
-            </Button>
-          </div>
-
-           {/* Show Loading Spinner */}
-           {isLoading && (
-            <div className="loading-container">
-              <Spinner style={{ width: "3rem", height: "3rem" }} /> {/* Reactstrap Spinner */}
-            </div>
-          )}
-
-          {/* Display Table */}
-          {currentItems && currentItems.length > 0 ? (
-            <Table bordered responsive striped>
-              <thead>
-                <tr>
-                  <th>Order Code</th>
-                  <th>Start Date</th>
-                  <th>End Date</th>
-                  <th>Info</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentItems.map((item, index) => (
-                  <tr key={index}>
-                    <td>{item.jcode}</td>
-                    <td>{new Date(item.startDay).toLocaleDateString()}</td>
-                    <td>{new Date(item.endDate).toLocaleDateString()}</td>
-                    <td>
-                   
-
-
-                        <span
-                          style={{ color: "blue", textDecoration: "underline", cursor: "pointer" }}
-                          onClick={() => {
-                            setSelectedDescription(item.description);
-                            toggleModal();
-                          }}
-                        >
-                          View Description
-                        </span>
-
-                    </td>
-                    <td>
-                      <Button color="success" className="me-2">
-                        Join
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-
-            </Table>
-          ) : (
-            <p className="mt-4">{msg || "No results found."}</p>
-          )}
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <Pagination className="justify-content-center mt-4">
-              {[...Array(totalPages)].map((_, i) => (
-                <PaginationItem key={i} active={currentPage === i + 1}>
-                  <PaginationLink onClick={() => handlePageChange(i + 1)}>{i + 1}</PaginationLink>
-                </PaginationItem>
-              ))}
-            </Pagination>
-          )}
-
-          {/* Modal for Description */}
-          <Modal isOpen={isModalOpen} toggle={toggleModal}>
-            <ModalHeader toggle={toggleModal}>Description</ModalHeader>
-            <ModalBody>{selectedDescription || "No description available."}</ModalBody>
-            <ModalFooter>
-              <Button color="secondary" onClick={toggleModal}>
-                Close
-              </Button>
-            </ModalFooter>
-          </Modal>
+    <Container>
+      <Typography variant="h4" className="my-4">Search Jamiya</Typography>
+      <Row className="mb-4">
+        <Col md={8}>
+          <Input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="Enter Jamiya name"
+          />
+        </Col>
+        <Col md={4}>
+          <Button color="primary" onClick={handleSearch}>
+            Search
+          </Button>
         </Col>
       </Row>
+      {loading && <Spinner />}
+      {error && <Typography color="error">{error.message || error}</Typography>}
+      {message && jamiyas.length === 0 && (
+        <Alert color="danger" className="mt-3">
+          {message || "No data available at the moment."}
+        </Alert>
+      )}
+      {jamiyas && jamiyas.length > 0 ? (
+        <Table bordered responsive striped>
+          <thead>
+            <tr>
+              <th>Order Code</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Info</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {jamiyas.map((item, index) => (
+              <tr key={index}>
+                <td>{item.jcode}</td>
+                <td>{new Date(item.startDay).toLocaleDateString()}</td>
+                <td>{new Date(item.endDate).toLocaleDateString()}</td>
+                <td>
+                  <span
+                    style={{ color: "blue", textDecoration: "underline", cursor: "pointer" }}
+                    onClick={() => {
+                      setSelectedDescription(item.description);
+                      toggleModal();
+                    }}
+                  >
+                    View Description
+                  </span>
+                </td>
+                <td>
+                  <Button color="success" className="me-2" onClick={() => handleCardClick(item.id)}>
+                    Join
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      ) : (
+        <Typography variant="h6">No available Jamiya</Typography>
+      )}
+      <Modal isOpen={isModalOpen} toggle={toggleModal}>
+        <ModalHeader toggle={toggleModal}>Description</ModalHeader>
+        <ModalBody>{selectedDescription || "No description available."}</ModalBody>
+        <ModalFooter>
+          <Button color="secondary" onClick={toggleModal}>
+            Close
+          </Button>
+        </ModalFooter>
+      </Modal>
     </Container>
   );
 };

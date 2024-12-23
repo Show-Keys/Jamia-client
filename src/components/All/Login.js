@@ -1,138 +1,130 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import { loginUser } from '../../Features/UserSlice';
+import "../../App.css";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import {
   Box,
   Button,
   Container,
-  IconButton,
+  Grid,
   TextField,
   Typography,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import Swal from "sweetalert2";
-import { useDispatch } from "react-redux";
-import { setUserToken } from "../../Features/UserSlice"; // Assuming you have an action to set the user token
 
 const Login = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    adminCode: '',
+  });
 
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { loading, error, user } = useSelector((state) => state.user);
 
-  const handleLogin = async () => {
-    if (!username || !password) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Missing Fields',
-        text: 'Both fields are required!',
-      });
-      return;
-    }
-    setError(""); // Clear any existing errors
-
-    try {
-      const response = await axios.post("http://localhost:5000/api/users/userLogin", {
-        uname: username,
-        password,
-      });
-
-      if (response.data.message === 'success') {
-        dispatch(setUserToken(response.data.token)); // Store the token in Redux state
-        navigate("/search"); // Navigate to SearchJamiya on successful login
+  useEffect(() => {
+    if (user) {
+      if (user.isAdmin) {
+        navigate('/AdminBoard');
       } else {
+        navigate('/search');
+      }
+    }
+  }, [user, navigate]);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(loginUser(formData)).then((result) => {
+      if (result.meta.requestStatus !== 'fulfilled') {
         Swal.fire({
           icon: 'error',
           title: 'Login Failed',
-          text: response.data.message || "You need to register first.",
+          text: error.message || 'Invalid credentials. Please try again.',
         });
       }
-    } catch (error) {
-      Swal.fire({
-        icon: 'error',
-        title: 'No regsterd',
-        text: "You need to register first.",
-      });
-      console.error("Login error:", error);
-    }
+    });
   };
 
   return (
-    <Container
-      maxWidth="lg"
-      sx={{
-        height: "50vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Box
-        sx={{
-          width: 600,
-          padding: 6,
-          background: "linear-gradient(135deg, rgb(42, 139, 177), rgb(198, 134, 45), rgb(117, 103, 84))",
-          borderRadius: 2,
-          textAlign: "center",
-        }}
-      >
-        <Typography variant="h4" component="h1" gutterBottom sx={{ color: "#fff", fontSize: "2rem" }}>
-          Login
-        </Typography>
-        {error && (
-          <Typography color="error" variant="body2" sx={{ mb: 2, fontSize: "1.2rem" }}>
-            {error}
-          </Typography>
-        )}
-        <TextField
-          fullWidth
-          id="username"
-          label="User Name"
-          margin="normal"
-          variant="outlined"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          sx={{ backgroundColor: "#fff", borderRadius: 1, fontSize: "1.2rem" }}
-          InputProps={{ style: { fontSize: "1.2rem" } }}
-          InputLabelProps={{ style: { fontSize: "1.2rem" } }}
-        />
-        <TextField
-          fullWidth
-          id="password"
-          label="Password"
-          type="password"
-          margin="normal"
-          variant="outlined"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          sx={{ backgroundColor: "#fff", borderRadius: 1, fontSize: "1.2rem" }}
-          InputProps={{ style: { fontSize: "1.2rem" } }}
-          InputLabelProps={{ style: { fontSize: "1.2rem" } }}
-        />
-        <Button
-          fullWidth
-          variant="contained"
-          color="primary"
-          sx={{ mt: 2, fontSize: "1.2rem" }}
-          onClick={handleLogin}
-        >
-          Login
-        </Button>
-        <Button
-          fullWidth
-          variant="outlined"
-          color="primary"
-          sx={{ mt: 2, fontSize: "1.2rem", display: "flex", alignItems: "center", justifyContent: "center" }}
-          onClick={() => navigate(-1)}
-        >
-          <ArrowBackIcon sx={{ mr: 1 }} />
-          Back
-        </Button>
+    <Container>
+      <Box>
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Typography variant="h4">Login</Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Email"
+                name="email"
+                variant="outlined"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Password"
+                type="password"
+                name="password"
+                variant="outlined"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Admin Code (optional)"
+                name="adminCode"
+                variant="outlined"
+                value={formData.adminCode}
+                onChange={handleChange}
+              />
+            </Grid>
+            {error && (
+              <Grid item xs={12}>
+                <Typography color="error">{error.message || error.toString()}</Typography>
+              </Grid>
+            )}
+            <Grid item xs={12}>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                disabled={loading}
+              >
+                {loading ? 'Loading...' : 'Login'}
+              </Button>
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                variant="contained"
+                color="secondary"
+                fullWidth
+                onClick={() => navigate('/')}
+              >
+                Back
+              </Button>
+            </Grid>
+          </Grid>
+        </form>
+        <br />
         <Typography
           variant="body2"
-          sx={{ mt: 4, color: "#fff", cursor: "pointer", fontSize: "1.2rem" }}
+          sx={{ mt: 4, color: "black", cursor: "pointer", fontSize: "1.2rem" }}
           onClick={() => navigate("/registration")}
         >
           New user? Register here

@@ -1,138 +1,135 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const initValue = {
-  admin: null,
+const initialState = {
   user: null,
   token: null,
-  message: "",
-  isLoading: false,
-  isSuccess: false,
-  isError: false,
-  isAuthenticated: false,
+  isAdmin: false,
+  loading: false,
+  error: null,
+  message: '',
+  users: [], // Add users array to manage users
+  jamiya: null, // Add jamiya to manage jamiya state
 };
 
-export const addUser = createAsyncThunk("user/addUser", async (userData, { rejectWithValue }) => {
+// Async thunk to register a user
+export const registerUser = createAsyncThunk('user/register', async (userData, thunkAPI) => {
   try {
-    const response = await axios.post("http://localhost:5000/api/users/insertUser", {
-      fullName: userData.fullName,
-      uname: userData.uname,
-      pnumber: userData.pnumber,
-      password: userData.password,
-      adminCode: userData.adminCode,
-    });
+    const response = await axios.post('http://localhost:5000/api/users/register', userData);
     return response.data;
   } catch (error) {
-    console.error("Error adding user", error);
-    return rejectWithValue(error.response.data);
+    return thunkAPI.rejectWithValue(error.response.data);
   }
 });
 
-export const userLogin = createAsyncThunk("user/userLogin", async (userData, { rejectWithValue }) => {
+// Async thunk to login a user
+export const loginUser = createAsyncThunk('user/login', async (userData, thunkAPI) => {
   try {
-    const response = await axios.post("http://localhost:5000/api/users/userLogin", {
-      uname: userData.uname,
-      password: userData.password,
-    });
+    const response = await axios.post('http://localhost:5000/api/users/login', userData);
     return response.data;
   } catch (error) {
-    console.error("Error logging in user", error);
-    return rejectWithValue(error.response.data);
+    return thunkAPI.rejectWithValue(error.response.data);
   }
 });
 
-export const adminLogin = createAsyncThunk("user/adminLogin", async (adminData, { rejectWithValue }) => {
+// Async thunk to fetch all users
+ const fetchUsers = createAsyncThunk('user/fetchUsers', async (_, thunkAPI) => {
   try {
-    const response = await axios.post("http://localhost:5000/api/users/adminLogin", {
-      uname: adminData.uname,
-      password: adminData.password,
-    });
+    const response = await axios.get('http://localhost:5000/api/users');
     return response.data;
   } catch (error) {
-    console.error("Error logging in admin", error);
-    return rejectWithValue(error.response.data);
+    return thunkAPI.rejectWithValue(error.response.data);
+  }
+});
+
+// Async thunk to delete a user
+ const deleteUser = createAsyncThunk('user/deleteUser', async (userId, thunkAPI) => {
+  try {
+    await axios.delete(`http://localhost:5000/api/users/${userId}`);
+    return userId;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.response.data);
   }
 });
 
 const userSlice = createSlice({
   name: 'user',
-  initialState: initValue,
+  initialState,
   reducers: {
-    resetState: (state) => {
-      state.admin = null;
-      state.user = null;
-      state.message = "";
-      state.isLoading = false;
-      state.isSuccess = false;
-      state.isError = false;
-      state.isAuthenticated = false;
-    },
-    setUserToken: (state, action) => {
-      state.token = action.payload;
-      state.isAuthenticated = true;
-    },
     logout: (state) => {
       state.user = null;
       state.token = null;
-      state.isAuthenticated = false;
+      state.isAdmin = false;
+      localStorage.removeItem('token');
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(addUser.pending, (state) => {
-        state.isLoading = true;
-        state.isError = false;
-        state.isSuccess = false;
-        state.message = "";
+      .addCase(registerUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
-      .addCase(addUser.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.message = action.payload;
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.user || null; // Set user data
+        state.token = action.payload.token || null; // Set token
+        state.isAdmin = action.payload.user?.isAdmin || false; // Set isAdmin
+        if (action.payload.token) {
+          localStorage.setItem('token', action.payload.token); // Store token in localStorage
+        }
       })
-      .addCase(addUser.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload || "Failed to add user";
+      .addCase(registerUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || 'Registration failed';
       })
-      .addCase(userLogin.pending, (state) => {
-        state.isLoading = true;
-        state.isError = false;
-        state.isSuccess = false;
-        state.message = "";
+      // Login User
+      .addCase(loginUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
-      .addCase(userLogin.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.user = action.payload.user;
-        state.token = action.payload.token;
-        state.isAuthenticated = true;
-        state.message = action.payload.message;
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.user || null; // Set user data
+        state.token = action.payload.token || null; // Set token
+        state.message = action.payload.message || '';
+        state.isAdmin = action.payload.user?.isAdmin || false; // Set isAdmin
+        if (action.payload.token) {
+          localStorage.setItem('token', action.payload.token); // Store token in localStorage
+        }
       })
-      .addCase(userLogin.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload || "Failed to log in user";
+      .addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || 'Login failed';
       })
-      .addCase(adminLogin.pending, (state) => {
-        state.isLoading = true;
-        state.isError = false;
-        state.isSuccess = false;
-        state.message = "";
+      // Fetch Users
+      .addCase(fetchUsers.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
-      .addCase(adminLogin.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.isSuccess = true;
-        state.admin = action.payload.admin;
-        state.message = action.payload.message;
+      .addCase(fetchUsers.fulfilled, (state, action) => {
+        state.loading = false;
+        state.users = action.payload;
       })
-      .addCase(adminLogin.rejected, (state, action) => {
-        state.isLoading = false;
-        state.isError = true;
-        state.message = action.payload || "Failed to log in admin";
+      .addCase(fetchUsers.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || 'Failed to fetch users';
+      })
+      // Delete User
+      .addCase(deleteUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.users = state.users.filter((user) => user._id !== action.payload);
+      })
+      .addCase(deleteUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || 'Failed to delete user';
       });
   },
 });
 
-export const { resetState, setUserToken, logout } = userSlice.actions;
+export const { logout } = userSlice.actions;
 export default userSlice.reducer;
+export { fetchUsers, deleteUser };

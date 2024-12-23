@@ -34,17 +34,13 @@ export const deleteWheelItem = createAsyncThunk('wheel/deleteWheelItem', async (
   }
 });
 
-const initialState = {
-  data: [],
-  isLoading: false,
-  error: null,
-};
-
 const wheelSlice = createSlice({
   name: 'wheel',
   initialState: {
     items: [],
     live: false,
+    isLoading: false,
+    error: null,
   },
   reducers: {
     setLive: (state, action) => {
@@ -60,7 +56,6 @@ const wheelSlice = createSlice({
       })
       .addCase(fetchWheelItems.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.data = action.payload;
         state.items = action.payload;
       })
       .addCase(fetchWheelItems.rejected, (state, action) => {
@@ -70,13 +65,12 @@ const wheelSlice = createSlice({
 
       // Add Wheel Item
       .addCase(addWheelItem.fulfilled, (state, action) => {
-        state.data.push(action.payload);
         state.items.push(action.payload);
       })
 
       // Delete Wheel Item
       .addCase(deleteWheelItem.fulfilled, (state, action) => {
-        state.data = state.data.filter((item) => item._id !== action.payload);
+        state.items = state.items.filter((item) => item._id !== action.payload);
       });
   },
 });

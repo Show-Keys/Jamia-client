@@ -8,6 +8,7 @@
 		"@eslint/object-schema": "^2.1.5",
 		"@hookform/resolvers": "^3.9.1",
 		"@jridgewell/sourcemap-codec": "^1.5.0",
+		"@material-ui/core": "^4.12.4",
 		"@mui/icons-material": "^6.2.1",
 		"@mui/material": "^6.2.1",
 		"@reduxjs/toolkit": "^2.5.0",

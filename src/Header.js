@@ -7,7 +7,7 @@ import { logout } from './Features/UserSlice'; // Assuming you have a logout act
 
 const HeaderContainer = styled.header`
   background: linear-gradient(135deg,rgb(238, 69, 69),rgb(198, 134, 45),rgb(117, 103, 84));
-  min-height: 10vh;
+  min-height: 5vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -59,7 +59,7 @@ const Nav = styled.nav`
 const UserSection = styled.div`
   display: flex;
   align-items: left;
-  gap: 30px;
+  gap: 20px;
 `;
 const pulse = keyframes`
   0% {
@@ -116,6 +116,8 @@ const Header = () => {
         <Link to="/login">Join To Jamia</Link>|
         <Link to="/AdminBoard">Admin Board</Link>|
         <Link to="/results">Results</Link>|
+        <Link to="/AddJamiya">AddJamiya</Link>|
+        <Link to="/JamiaDashBorad">JamiaDashBorad</Link>|
         <Link to="/aboutus">About Us</Link>|
         <Link to="/UserWheel"><LiveBadge>🔴 Live Wheel </LiveBadge></Link>
       </Nav>

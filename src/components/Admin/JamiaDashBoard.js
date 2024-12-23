@@ -13,20 +13,20 @@ import {
 } from "reactstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { getJamiyas } from "../../Features/jamiyaSlice";
+import { useNavigate } from "react-router-dom";
 
-const JamiaDashBorad = () => {
+const JamiaDashBoard = () => {
   const [isModalOpen, setModalOpen] = useState(false); // Modal visibility state
   const [selectedDescription, setSelectedDescription] = useState(null); // Modal content
 
-  const Jamiya = useSelector((state) => state.jamiyas.Jamiyas || []); // Fetched data
-  const msg = useSelector((state) => state.jamiyas.message); // Error or response message
-  console.log(Jamiya);
-  console.log(msg);
+  const Jamiya = useSelector((state) => state.jamiya.jamiyas || []); // Fetched data
+  const msg = useSelector((state) => state.jamiya.message); // Error or response message
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // Fetch all Jamiya on page load
   useEffect(() => {
-    dispatch(getJamiyas()); // Assuming `getJamiya()` fetches all data when no parameter is passed
+    dispatch(getJamiyas()); // Assuming `getJamiyas()` fetches all data when no parameter is passed
   }, [dispatch]);
 
   // Modal Toggle
@@ -37,6 +37,9 @@ const JamiaDashBorad = () => {
       <Row className="justify-content-center align-items-center">
         <Col md={10} className="text-center">
           <h1 className="mb-4">All Jamiya</h1>
+          <Button color="primary" className="mb-4" onClick={() => navigate('/addJamiya')}>
+            Add Jamiya
+          </Button>
 
           {/* Handle "No Data Found" */}
           {msg && Jamiya.length === 0 && (
@@ -101,4 +104,4 @@ const JamiaDashBorad = () => {
   );
 };
 
-export default JamiaDashBorad;
+export default JamiaDashBoard;

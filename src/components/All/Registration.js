@@ -1,197 +1,157 @@
-import React, { useState, useEffect } from 'react';
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { Grid, TextField, Button, Typography, Box, Container } from '@material-ui/core';
 import Swal from 'sweetalert2';
-import { userSchemaValidation } from "../../Validation/UserValidation";
-import "../../App.css";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { registerUser } from '../../Features/UserSlice';
+import { userSchemaValidation } from '../../Validation/UserValidation';
 
 const Registration = () => {
-  const [fullName, setFullName] = useState("");
-  const [uname, setUname] = useState("");
-  const [pnumber, setPnumber] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [adminCode, setAdminCode] = useState("");
-  const [success, setSuccess] = useState(false);
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { loading, error } = useSelector((state) => state.user);
 
-  const {
-    register,
-    handleSubmit: submitForm,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(userSchemaValidation),
-  });
-
-  useEffect(() => {
-    if (success) {
-      navigate('/login'); // Redirect to login or any other page after successful registration
-    }
-  }, [success, navigate]);
-
-  const onSubmit = async (data) => {
-    try {
-      const response = await axios.post("http://localhost:5000/api/users/insertUser", data);
-      if (response.status === 200) {
-        setSuccess(true);
+  const handleSubmit = (values, { setSubmitting }) => {
+    dispatch(registerUser(values)).then((result) => {
+      setSubmitting(false);
+      if (result.meta.requestStatus === 'fulfilled') {
+        Swal.fire({
+          icon: 'success',
+          title: 'Registration Successful',
+          text: 'You have successfully registered!',
+        }).then(() => {
+          navigate('/login');
+        });
       } else {
         Swal.fire({
           icon: 'error',
           title: 'Registration Failed',
-          text: response.data || "Registration failed. Please try again.",
+          text: result.payload?.error || 'An error occurred during registration.',
         });
       }
-    } catch (error) {
-      Swal.fire({
-        icon: 'error',
-        title: 'An Error Occurred',
-        text: "An error occurred. Please try again.",
-      });
-      console.error("Registration error:", error);
-    }
+    });
   };
 
   return (
-    <Container
-      maxWidth="lg"
-      sx={{
-        height: "50vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <Box
-        sx={{
-          width: "100%",
-          maxWidth: 600,
-          bgcolor: "background.paper",
-          p: 4,
-          borderRadius: 2,
-          boxShadow: 3,
-        }}
-      >
-        <Typography variant="h4" align="center" gutterBottom>
-          Registration
-        </Typography>
-        <form onSubmit={submitForm(onSubmit)}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Full Name"
-                name="fullName"
-                variant="outlined"
-                {...register('fullName')}
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                error={!!errors.fullName}
-                helperText={errors.fullName ? errors.fullName.message : ''}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="User Name"
-                name="uname"
-                variant="outlined"
-                {...register('uname')}
-                value={uname}
-                onChange={(e) => setUname(e.target.value)}
-                error={!!errors.uname}
-                helperText={errors.uname ? errors.uname.message : ''}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Phone Number"
-                name="pnumber"
-                variant="outlined"
-                {...register('pnumber')}
-                value={pnumber}
-                onChange={(e) => setPnumber(e.target.value)}
-                error={!!errors.pnumber}
-                helperText={errors.pnumber ? errors.pnumber.message : ''}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Password"
-                type="password"
-                name="password"
-                variant="outlined"
-                {...register('password')}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                error={!!errors.password}
-                helperText={errors.password ? errors.password.message : ''}
-                autoComplete="new-password"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Confirm Password"
-                type="password"
-                name="confirmPassword"
-                variant="outlined"
-                {...register('confirmPassword')}
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                error={!!errors.confirmPassword}
-                helperText={errors.confirmPassword ? errors.confirmPassword.message : ''}
-                autoComplete="new-password"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Admin Access Code"
-                name="adminCode"
-                variant="outlined"
-                {...register('adminCode')}
-                value={adminCode}
-                onChange={(e) => setAdminCode(e.target.value)}
-                error={!!errors.adminCode}
-                helperText={errors.adminCode ? errors.adminCode.message : ''}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Button
-                fullWidth
-                variant="contained"
-                color="primary"
-                type="submit"
-              >
-                Register
-              </Button>
-            </Grid>
-            <Grid item xs={12}>
-              <Button
-                startIcon={<ArrowBackIcon />}
-                variant="outlined"
-                color="secondary"
-                onClick={() => navigate(-1)}
-              >
-                Back
-              </Button>
-            </Grid>
-          </Grid>
-        </form>
+    <Container>
+      <Box>
+        <Typography variant="h4">Register</Typography>
+        <Formik
+          initialValues={{
+            fullName: '',
+            uname: '',
+            pnumber: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+            adminCode: '',
+          }}
+          validationSchema={userSchemaValidation}
+          onSubmit={handleSubmit}
+        >
+          {({ isSubmitting }) => (
+            <Form>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <Field
+                    as={TextField}
+                    fullWidth
+                    label="Full Name"
+                    name="fullName"
+                    variant="outlined"
+                    helperText={<ErrorMessage name="fullName" />}
+                    error={!!<ErrorMessage name="fullName" />}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Field
+                    as={TextField}
+                    fullWidth
+                    label="Username"
+                    name="uname"
+                    variant="outlined"
+                    helperText={<ErrorMessage name="uname" />}
+                    error={!!<ErrorMessage name="uname" />}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Field
+                    as={TextField}
+                    fullWidth
+                    label="Phone Number"
+                    name="pnumber"
+                    variant="outlined"
+                    helperText={<ErrorMessage name="pnumber" />}
+                    error={!!<ErrorMessage name="pnumber" />}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Field
+                    as={TextField}
+                    fullWidth
+                    label="Email"
+                    name="email"
+                    variant="outlined"
+                    helperText={<ErrorMessage name="email" />}
+                    error={!!<ErrorMessage name="email" />}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Field
+                    as={TextField}
+                    fullWidth
+                    label="Password"
+                    type="password"
+                    name="password"
+                    variant="outlined"
+                    helperText={<ErrorMessage name="password" />}
+                    error={!!<ErrorMessage name="password" />}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Field
+                    as={TextField}
+                    fullWidth
+                    label="Confirm Password"
+                    type="password"
+                    name="confirmPassword"
+                    variant="outlined"
+                    helperText={<ErrorMessage name="confirmPassword" />}
+                    error={!!<ErrorMessage name="confirmPassword" />}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Field
+                    as={TextField}
+                    fullWidth
+                    label="Admin Code (if applicable)"
+                    name="adminCode"
+                    variant="outlined"
+                    helperText={<ErrorMessage name="adminCode" />}
+                    error={!!<ErrorMessage name="adminCode" />}
+                  />
+                </Grid>
+                {error && (
+                  <Grid item xs={12}>
+                    <Typography color="error">{error.message || error}</Typography>
+                  </Grid>
+                )}
+                <Grid item xs={12}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    fullWidth
+                    disabled={isSubmitting || loading}
+                  >
+                    {loading ? 'Loading...' : 'Register'}
+                  </Button>
+                </Grid>
+              </Grid>
+            </Form>
+          )}
+        </Formik>
       </Box>
     </Container>
   );

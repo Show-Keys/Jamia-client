@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import { Button as MaterialButton } from '@material-ui/core';
 
 // Styled Components
 const DashboardContainer = styled(motion.div)`
@@ -13,7 +15,7 @@ const DashboardContainer = styled(motion.div)`
   min-height: 20vh;
   width: 90%;
   max-width: 720px;
-background: linear-gradient(135deg,rgb(42, 139, 177),rgb(198, 134, 45),rgb(117, 103, 84));
+  background: linear-gradient(135deg, rgb(42, 139, 177), rgb(198, 134, 45), rgb(117, 103, 84));
   text-align: center;
   padding: 30px;
   color: #fff;
@@ -57,6 +59,13 @@ const Button = styled(motion.button)`
 
 const AdminBoard = () => {
   const navigate = useNavigate();
+  const { isAdmin } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    if (!isAdmin) {
+      navigate('/login'); // Redirect to login page if not admin
+    }
+  }, [isAdmin, navigate]);
 
   return (
     <DashboardContainer
@@ -83,20 +92,20 @@ const AdminBoard = () => {
         >
           Manage Wheel
         </Button>
-        <Button
+        <MaterialButton
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => navigate('/UserManagement')}
         >
           User Management
-        </Button>
-        <Button
+        </MaterialButton>
+        <MaterialButton
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => navigate('/JamiaDashBoard')}
         >
           Jamia Dashboard
-        </Button>
+        </MaterialButton>
       </ButtonBox>
     </DashboardContainer>
   );
